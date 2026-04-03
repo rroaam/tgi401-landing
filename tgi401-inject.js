@@ -31,6 +31,40 @@
       });
 
 
+      /* ---- CHROME LOGO ---- */
+      /* Insert large TGI401 chrome logo above the icon grid */
+      var iconGrid = document.querySelector('.mobile-icons');
+      if (iconGrid) {
+        var logoWrap = document.createElement('div');
+        logoWrap.id = 'tgi401-mobile-logo';
+        logoWrap.style.cssText = [
+          'text-align: center',
+          'padding: 24px 32px 8px',
+          'width: 100%'
+        ].join(';');
+
+        var logoImg = document.createElement('img');
+        logoImg.src = 'https://401files.vercel.app/logo-chrome.webp';
+        logoImg.alt = 'The Girls in 401';
+        logoImg.style.cssText = [
+          'width: 75%',
+          'max-width: 300px',
+          'height: auto',
+          'filter: drop-shadow(0 4px 12px rgba(0,0,0,0.15))',
+          'margin: 0 auto',
+          'display: block'
+        ].join(';');
+
+        // Add onerror fallback to PNG
+        logoImg.onerror = function() { this.src = 'https://401files.vercel.app/logo-chrome-sm.png'; };
+
+        logoWrap.appendChild(logoImg);
+
+        // Insert before the icon grid
+        iconGrid.parentNode.insertBefore(logoWrap, iconGrid);
+      }
+
+
       /* ---- MARK EMPTY CELLS ---- */
       document.querySelectorAll('.mobile-icons .w-layout-cell').forEach(function(cell) {
         if (!cell.querySelector('.draggable3')) {

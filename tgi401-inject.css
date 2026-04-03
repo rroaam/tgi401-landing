@@ -148,25 +148,23 @@
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
-    padding: 20px 12px !important;
-    /* Solid retro card — no glassmorphism */
-    background: rgba(255, 255, 255, 0.88) !important;
-    border: 1px solid #d0d0d0 !important;
-    border-radius: 12px !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08),
-                inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+    padding: 24px 12px !important;
+    /* Transparent — no card background */
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
     min-height: auto !important;
     height: auto !important;
-    padding-bottom: 20px !important;
+    padding-bottom: 8px !important;
     transition: transform 0.15s ease !important;
     -webkit-tap-highlight-color: transparent !important;
   }
 
   .mobile-icons .w-layout-cell:active {
-    transform: scale(0.96) !important;
-    background: rgba(255, 255, 255, 0.95) !important;
+    transform: scale(0.90) !important;
   }
 
   /* Hide empty cells */
@@ -203,23 +201,25 @@
     height: auto !important;
   }
 
-  /* Icon images */
+  /* Icon images — large, like iOS home screen */
   .mobile-icons .draggable3 > img,
   .mobile-icons .draggable3-copy > img {
-    width: 52px !important;
-    height: 52px !important;
+    width: 72px !important;
+    height: 72px !important;
     object-fit: contain !important;
     display: block !important;
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.15)) !important;
   }
 
-  /* Icon labels */
+  /* Icon labels — larger, white with shadow for readability on video bg */
   .mobile-icons .text-block-3 {
-    font-size: 12px !important;
+    font-size: 14px !important;
     font-weight: 700 !important;
-    margin-top: 8px !important;
+    margin-top: 10px !important;
     text-align: center !important;
-    color: #1a1a2e !important;
+    color: #fff !important;
     letter-spacing: -0.03em !important;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.5) !important;
   }
 
 

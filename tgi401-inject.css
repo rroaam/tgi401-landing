@@ -1,6 +1,6 @@
 /* ============================================
-   TGI401 — Custom Code Injection v6
-   Mobile: OS chrome bar + icon grid + sticky shop CTA
+   TGI401 — Custom Code Injection v7
+   Mobile: fixed logo + 3-col icons + product modal + Stripe checkout
    ============================================ */
 
 /* --- CURSOR — Desktop only --- */
@@ -80,18 +80,30 @@
   .left-nav-mobile { display: none !important; }
   .right-nav-mobile { display: none !important; }
 
-  /* ---- RETRO MAC BROWSER CHROME (injected via JS) ---- */
-  #tgi401-chrome-bar {
-    position: sticky;
+  /* ---- FIXED LOGO (always visible at top) ---- */
+  #tgi401-fixed-logo {
+    position: fixed;
     top: 0;
+    left: 0;
+    right: 0;
     z-index: 500;
-    background: linear-gradient(180deg, #f8f8f8 0%, #e0e0e0 100%);
-    border-bottom: 1px solid #b5b5b5;
-    padding: 10px 14px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+    text-align: center;
+    padding: 12px 16px 8px;
+    background: linear-gradient(180deg, rgba(200,221,242,0.95) 0%, rgba(200,221,242,0.8) 70%, rgba(200,221,242,0) 100%);
+    pointer-events: none;
+  }
+
+  #tgi401-fixed-logo img {
+    width: 50%;
+    max-width: 200px;
+    height: auto;
+    filter: drop-shadow(0 2px 8px rgba(0,0,0,0.12));
+    pointer-events: auto;
+  }
+
+  /* ---- RETRO MAC BROWSER CHROME (hidden in v7 — fixed logo replaces it) ---- */
+  #tgi401-chrome-bar {
+    display: none !important;
   }
 
   #tgi401-chrome-bar .dots {
@@ -158,14 +170,14 @@
 
 
   /* ---- ICON GRID: The main content ---- */
-  /* Clean 2-column grid, no glassmorphism, solid retro cards */
+  /* Tight grid that fits in one viewport below fixed logo */
   .mobile-icons {
     display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
+    grid-template-columns: 1fr 1fr 1fr !important;
     gap: 0 !important;
-    width: calc(100% - 16px) !important;
-    margin: -8px auto 0 !important;
-    padding: 0 !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+    padding: 80px 4px 0 !important; /* top padding = logo clearance */
     position: relative !important;
     flex: 1 !important;
   }
@@ -175,7 +187,7 @@
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
-    padding: 8px 4px 4px !important;
+    padding: 6px 2px 2px !important;
     background: transparent !important;
     border: none !important;
     border-radius: 0 !important;
@@ -226,15 +238,15 @@
     height: auto !important;
   }
 
-  /* Icon images — uniform size for all icons */
+  /* Icon images — compact for 3-col, single viewport fit */
   .mobile-icons .draggable3 > img,
   .mobile-icons .draggable3-copy > img,
   .mobile-icons .draggable3 img,
   .mobile-icons .draggable3-copy img {
-    width: 68px !important;
-    height: 68px !important;
-    min-width: 68px !important;
-    min-height: 68px !important;
+    width: 56px !important;
+    height: 56px !important;
+    min-width: 56px !important;
+    min-height: 56px !important;
     object-fit: contain !important;
     display: block !important;
     filter: drop-shadow(0 2px 6px rgba(0,0,0,0.15)) !important;
@@ -242,14 +254,14 @@
 
   /* Icon labels */
   .mobile-icons .text-block-3 {
-    font-size: 13px !important;
+    font-size: 11px !important;
     font-weight: 700 !important;
-    margin-top: 8px !important;
+    margin-top: 4px !important;
     text-align: center !important;
     color: #fff !important;
     letter-spacing: -0.02em !important;
     text-shadow: 0 1px 3px rgba(0,0,0,0.6) !important;
-    line-height: 1.2 !important;
+    line-height: 1.15 !important;
   }
 
 
@@ -258,6 +270,166 @@
   @keyframes tgi401-cloud-float {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-4px); }
+  }
+
+  /* ---- PRODUCT DETAIL MODAL ---- */
+  #tgi401-product-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    display: none;
+    flex-direction: column;
+    background: #fff;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  #tgi401-product-modal.active {
+    display: flex;
+  }
+
+  #tgi401-product-modal .modal-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 10;
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.06);
+    font-size: 20px;
+    line-height: 36px;
+    text-align: center;
+    color: #333;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  #tgi401-product-modal .modal-image {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    background: #f5f5f5;
+  }
+
+  #tgi401-product-modal .modal-body {
+    padding: 20px 20px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  #tgi401-product-modal .modal-name {
+    font-family: 'HelveticaNeueLTPro', 'Helvetica Neue', 'Helvetica', sans-serif;
+    font-weight: 700;
+    font-size: 24px;
+    letter-spacing: -0.05em;
+    color: #1a1a2e;
+  }
+
+  #tgi401-product-modal .modal-price {
+    font-family: 'HelveticaNeueLTPro', 'Helvetica Neue', 'Helvetica', sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    color: #1a1a2e;
+  }
+
+  #tgi401-product-modal .modal-sizes {
+    display: flex;
+    gap: 8px;
+  }
+
+  #tgi401-product-modal .size-btn {
+    flex: 1;
+    padding: 12px 0;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    background: #fff;
+    font-family: 'HelveticaNeueLTPro', 'Helvetica Neue', 'Helvetica', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: -0.03em;
+    color: #1a1a2e;
+    text-align: center;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: border-color 0.15s, background 0.15s;
+  }
+
+  #tgi401-product-modal .size-btn.selected {
+    border-color: #1a1a2e;
+    background: #1a1a2e;
+    color: #fff;
+  }
+
+  #tgi401-product-modal .modal-buy {
+    display: block;
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: 10px;
+    background: #1a1a2e;
+    color: #fff;
+    font-family: 'HelveticaNeueLTPro', 'Helvetica Neue', 'Helvetica', sans-serif;
+    font-weight: 800;
+    font-size: 16px;
+    letter-spacing: -0.03em;
+    text-align: center;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: opacity 0.15s;
+  }
+
+  #tgi401-product-modal .modal-buy:active {
+    opacity: 0.85;
+  }
+
+  #tgi401-product-modal .modal-onesize {
+    font-family: 'HelveticaNeueLTPro', 'Helvetica Neue', 'Helvetica', sans-serif;
+    font-size: 14px;
+    color: #666;
+    text-align: center;
+    padding: 8px 0;
+  }
+
+  #tgi401-product-modal .modal-switcher {
+    border-top: 1px solid #eee;
+    padding-top: 16px;
+  }
+
+  #tgi401-product-modal .modal-switch-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    background: #fafafa;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.15s;
+  }
+
+  #tgi401-product-modal .modal-switch-btn:active {
+    background: #f0f0f0;
+  }
+
+  #tgi401-product-modal .modal-switch-btn img {
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+    border-radius: 6px;
+    background: #f5f5f5;
+  }
+
+  #tgi401-product-modal .modal-switch-btn span {
+    font-family: 'HelveticaNeueLTPro', 'Helvetica Neue', 'Helvetica', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: -0.03em;
+    color: #1a1a2e;
   }
 
   /* ---- CLOSE BUTTONS ---- */

@@ -1,6 +1,6 @@
 /* ============================================
-   TGI401 — Custom Code Injection v6 (JS)
-   Mobile: icon grid + sticky retro shop CTA
+   TGI401 — Custom Code Injection v7 (JS)
+   Mobile: fixed logo + 3-col icons + product modal + Stripe checkout
    ============================================ */
 (function() {
   'use strict';
@@ -31,20 +31,32 @@
         el.style.position = '';
       });
 
-      /* Make entire icon cells tappable by finding the data-w-id trigger inside */
+      /* Make entire icon cells tappable — route product icons to modal */
       document.querySelectorAll('.mobile-icons .w-layout-cell').forEach(function(cell) {
         cell.style.cursor = 'pointer';
 
-        // Find the trigger element (has data-w-id) or link inside
         var trigger = cell.querySelector('[data-w-id]');
         var link = cell.querySelector('a[href]');
+        var label = cell.querySelector('.text-block-3');
+        var labelText = label ? label.textContent.trim().toLowerCase() : '';
 
         cell.addEventListener('click', function(e) {
-          // If it's "Stalk Us" with an Instagram link, navigate there
+          e.preventDefault();
+          e.stopPropagation();
+
+          // Product icons → open product modal
+          if (labelText.indexOf('shop') !== -1 || labelText.indexOf('store') !== -1) {
+            // "The Shop" icon → show tee by default (first product)
+            openProductModal('tee');
+            return;
+          }
+
+          // Instagram link
           if (link && link.href && link.href.indexOf('instagram') !== -1) {
             window.open(link.href, '_blank');
             return;
           }
+
           // Otherwise click the Webflow Interaction trigger
           if (trigger) {
             trigger.click();
@@ -88,39 +100,136 @@
       }
 
 
-      /* ---- CHROME LOGO ---- */
-      /* Insert large TGI401 chrome logo above the icon grid */
-      var iconGrid = document.querySelector('.mobile-icons');
-      if (iconGrid) {
-        var logoWrap = document.createElement('div');
-        logoWrap.id = 'tgi401-mobile-logo';
-        logoWrap.style.cssText = [
-          'text-align: center',
-          'padding: 0 32px',
-          'width: 100%',
-          'margin-top: -4px'
-        ].join(';');
+      /* ---- FIXED LOGO (always visible at top, does not scroll) ---- */
+      var fixedLogo = document.createElement('div');
+      fixedLogo.id = 'tgi401-fixed-logo';
+      var logoImg = document.createElement('img');
+      logoImg.src = 'https://401files.vercel.app/logo-chrome.webp';
+      logoImg.alt = 'The Girls in 401';
+      logoImg.onerror = function() { this.src = 'https://401files.vercel.app/logo-chrome-sm.png'; };
+      fixedLogo.appendChild(logoImg);
+      document.body.appendChild(fixedLogo);
 
-        var logoImg = document.createElement('img');
-        logoImg.src = 'https://401files.vercel.app/logo-chrome.webp';
-        logoImg.alt = 'The Girls in 401';
-        logoImg.style.cssText = [
-          'width: 60%',
-          'max-width: 240px',
-          'height: auto',
-          'filter: drop-shadow(0 4px 12px rgba(0,0,0,0.15))',
-          'margin: 0 auto',
-          'display: block'
-        ].join(';');
 
-        // Add onerror fallback to PNG
-        logoImg.onerror = function() { this.src = 'https://401files.vercel.app/logo-chrome-sm.png'; };
+      /* ---- PRODUCT DATA ---- */
+      var products = {
+        tee: {
+          name: 'The Roomie Tee',
+          price: '$45',
+          image: 'https://401files.vercel.app/shirt-gradient-sm.png',
+          sizes: ['XS', 'S/M', 'L/XL'],
+          stripeUrl: 'https://buy.stripe.com/bJebJ13uTd9u1aO9d2b7y01'
+        },
+        hat: {
+          name: 'The Roomie Hat',
+          price: '$55',
+          image: 'https://401files.vercel.app/hat-gradient-sm.png',
+          sizes: null, // one size
+          stripeUrl: 'https://buy.stripe.com/9B65kD3uT0mI2eS88Yb7y02'
+        }
+      };
 
-        logoWrap.appendChild(logoImg);
 
-        // Insert before the icon grid
-        iconGrid.parentNode.insertBefore(logoWrap, iconGrid);
+      /* ---- PRODUCT DETAIL MODAL ---- */
+      var modal = document.createElement('div');
+      modal.id = 'tgi401-product-modal';
+      modal.innerHTML = [
+        '<button class="modal-close" aria-label="Close">&times;</button>',
+        '<img class="modal-image" src="" alt="">',
+        '<div class="modal-body">',
+        '  <div class="modal-name"></div>',
+        '  <div class="modal-price"></div>',
+        '  <div class="modal-sizes"></div>',
+        '  <button class="modal-buy">BUY NOW</button>',
+        '  <div class="modal-switcher"></div>',
+        '</div>'
+      ].join('');
+      document.body.appendChild(modal);
+
+      var modalImg = modal.querySelector('.modal-image');
+      var modalName = modal.querySelector('.modal-name');
+      var modalPrice = modal.querySelector('.modal-price');
+      var modalSizes = modal.querySelector('.modal-sizes');
+      var modalBuy = modal.querySelector('.modal-buy');
+      var modalSwitcher = modal.querySelector('.modal-switcher');
+      var currentProduct = null;
+      var currentProductKey = null;
+      var selectedSize = null;
+
+      function openProductModal(productKey) {
+        var p = products[productKey];
+        if (!p) return;
+        currentProduct = p;
+        currentProductKey = productKey;
+        selectedSize = null;
+
+        modalImg.src = p.image;
+        modalImg.alt = p.name;
+        modalName.textContent = p.name;
+        modalPrice.textContent = p.price;
+
+        // Build size selector or "One Size" label
+        modalSizes.innerHTML = '';
+        if (p.sizes) {
+          p.sizes.forEach(function(size) {
+            var btn = document.createElement('button');
+            btn.className = 'size-btn';
+            btn.textContent = size;
+            btn.addEventListener('click', function() {
+              modalSizes.querySelectorAll('.size-btn').forEach(function(b) { b.classList.remove('selected'); });
+              btn.classList.add('selected');
+              selectedSize = size;
+            });
+            modalSizes.appendChild(btn);
+          });
+        } else {
+          var oneSize = document.createElement('div');
+          oneSize.className = 'modal-onesize';
+          oneSize.textContent = 'One Size';
+          modalSizes.appendChild(oneSize);
+          selectedSize = 'ONE SIZE';
+        }
+
+        // Product switcher — show the OTHER product
+        modalSwitcher.innerHTML = '';
+        var otherKey = productKey === 'tee' ? 'hat' : 'tee';
+        var other = products[otherKey];
+        var switchBtn = document.createElement('button');
+        switchBtn.className = 'modal-switch-btn';
+        switchBtn.innerHTML = '<img src="' + other.image + '" alt="' + other.name + '"><span>' + other.name + ' — ' + other.price + '</span>';
+        switchBtn.addEventListener('click', function() {
+          openProductModal(otherKey);
+        });
+        modalSwitcher.appendChild(switchBtn);
+
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
       }
+
+      // Close modal
+      modal.querySelector('.modal-close').addEventListener('click', function() {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+      });
+
+      // Buy button → Stripe
+      modalBuy.addEventListener('click', function() {
+        if (!currentProduct) return;
+        if (currentProduct.sizes && !selectedSize) {
+          // Flash size buttons to prompt selection
+          modalSizes.querySelectorAll('.size-btn').forEach(function(b) {
+            b.style.borderColor = '#e8457a';
+            setTimeout(function() { b.style.borderColor = ''; }, 600);
+          });
+          return;
+        }
+        window.location.href = currentProduct.stripeUrl;
+      });
+
+
+      /* ---- WIRE PRODUCT ICONS TO MODAL ---- */
+      // Intercept icon taps: detect "The Shop" or product-related icons
+      // and route them to the product modal instead of Webflow popups
 
 
       /* ---- MARK EMPTY CELLS ---- */
@@ -193,26 +302,10 @@
         btn.style.animation = 'tgi401-cloud-float 3s ease-in-out infinite';
       }, { passive: true });
 
-      // Click handler: open the shop popup via verified data-w-id
+      // Click handler: open product modal with tee (primary product)
       btn.addEventListener('click', function(e) {
         e.preventDefault();
-
-        // Verified trigger: data-w-id="5c6a4337-7205-ef83-a10e-80ca2df9bf30" = "The Shop"
-        var shopTrigger = document.querySelector('[data-w-id="5c6a4337-7205-ef83-a10e-80ca2df9bf30"]');
-        if (shopTrigger) {
-          shopTrigger.click();
-        } else {
-          // Fallback: try any "The Shop" text
-          var labels = document.querySelectorAll('.text-block-3');
-          for (var i = 0; i < labels.length; i++) {
-            if (labels[i].textContent.trim() === 'The Shop') {
-              var t = labels[i].closest('[data-w-id]');
-              if (t) { t.click(); return; }
-            }
-          }
-          // Last resort: go to product page
-          window.location.href = '/product/the-roomie-tee-pdf';
-        }
+        openProductModal('tee');
       });
 
     } /* end isMobile */

@@ -57,7 +57,7 @@
     flex-direction: column !important;
     overflow: visible !important;
     inset: auto !important;
-    padding-bottom: 80px !important; /* Space for sticky CTA */
+    padding-bottom: 72px !important; /* Space for sticky CTA */
   }
 
   /* ---- BACKGROUND VIDEO ---- */
@@ -161,10 +161,10 @@
   /* Clean 2-column grid, no glassmorphism, solid retro cards */
   .mobile-icons {
     display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
-    gap: 12px !important;
-    width: calc(100% - 32px) !important;
-    margin: 20px auto !important;
+    grid-template-columns: 1fr 1fr 1fr !important;
+    gap: 4px !important;
+    width: calc(100% - 24px) !important;
+    margin: 4px auto 0 !important;
     padding: 0 !important;
     position: relative !important;
     flex: 1 !important;
@@ -175,8 +175,7 @@
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
-    padding: 24px 12px !important;
-    /* Transparent — no card background */
+    padding: 12px 4px 6px !important;
     background: transparent !important;
     border: none !important;
     border-radius: 0 !important;
@@ -185,7 +184,6 @@
     -webkit-backdrop-filter: none !important;
     min-height: auto !important;
     height: auto !important;
-    padding-bottom: 8px !important;
     transition: transform 0.15s ease !important;
     -webkit-tap-highlight-color: transparent !important;
   }
@@ -228,25 +226,26 @@
     height: auto !important;
   }
 
-  /* Icon images — large, like iOS home screen */
+  /* Icon images — iOS home screen size */
   .mobile-icons .draggable3 > img,
   .mobile-icons .draggable3-copy > img {
-    width: 72px !important;
-    height: 72px !important;
+    width: 60px !important;
+    height: 60px !important;
     object-fit: contain !important;
     display: block !important;
     filter: drop-shadow(0 2px 6px rgba(0,0,0,0.15)) !important;
   }
 
-  /* Icon labels — larger, white with shadow for readability on video bg */
+  /* Icon labels */
   .mobile-icons .text-block-3 {
-    font-size: 14px !important;
+    font-size: 11px !important;
     font-weight: 700 !important;
-    margin-top: 10px !important;
+    margin-top: 6px !important;
     text-align: center !important;
     color: #fff !important;
-    letter-spacing: -0.03em !important;
-    text-shadow: 0 1px 4px rgba(0,0,0,0.5) !important;
+    letter-spacing: -0.02em !important;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.6) !important;
+    line-height: 1.2 !important;
   }
 
 

@@ -32,25 +32,37 @@
 
 
       /* ---- RETRO MAC BROWSER CHROME BAR ---- */
-      var section = document.querySelector('.section');
-      if (section) {
-        var chrome = document.createElement('div');
-        chrome.id = 'tgi401-chrome-bar';
-        chrome.innerHTML = [
-          '<div class="dots">',
-          '  <div class="dot dot-red"></div>',
-          '  <div class="dot dot-yellow"></div>',
-          '  <div class="dot dot-green"></div>',
-          '</div>',
-          '<div class="title">thegirlsin401.com</div>',
-          '<a class="cart-link" href="#" onclick="document.querySelector(\'.cart-button-2\')?.click(); return false;">',
-          '  <svg viewBox="0 0 17 17" fill="none"><path d="M2.6,2L0,2L0,0L4.4,0L4.8,4L16,4L16,9.9L3.8,12.4L2.6,2Z M15.5,17C14.7,17,14,16.3,14,15.5S14.7,14,15.5,14S17,14.7,17,15.5S16.3,17,15.5,17Z M5.5,17C4.7,17,4,16.3,4,15.5S4.7,14,5.5,14S7,14.7,7,15.5S6.3,17,5.5,17Z" fill="currentColor"/></svg>',
-          '  Cart',
-          '</a>'
-        ].join('');
+      // Hide the default nav bar via JS too (belt+suspenders)
+      var navBar = document.querySelector('.nav-bar');
+      if (navBar) navBar.style.display = 'none';
 
-        // Insert as first child of .section (before .nav-bar)
-        section.insertBefore(chrome, section.firstChild);
+      // Create and insert chrome bar at the very top of body
+      var chrome = document.createElement('div');
+      chrome.id = 'tgi401-chrome-bar';
+      chrome.innerHTML = [
+        '<div class="dots">',
+        '  <div class="dot dot-red"></div>',
+        '  <div class="dot dot-yellow"></div>',
+        '  <div class="dot dot-green"></div>',
+        '</div>',
+        '<div class="title">thegirlsin401.com</div>',
+        '<a class="cart-link" href="#" id="tgi401-cart-link">',
+        '  <svg viewBox="0 0 17 17" fill="none" width="16" height="16"><path d="M2.6,2L0,2L0,0L4.4,0L4.8,4L16,4L16,9.9L3.8,12.4L2.6,2Z M15.5,17C14.7,17,14,16.3,14,15.5S14.7,14,15.5,14S17,14.7,17,15.5S16.3,17,15.5,17Z M5.5,17C4.7,17,4,16.3,4,15.5S4.7,14,5.5,14S7,14.7,7,15.5S6.3,17,5.5,17Z" fill="currentColor"/></svg>',
+        '  Cart',
+        '</a>'
+      ].join('');
+
+      // Insert at top of body, before everything
+      document.body.insertBefore(chrome, document.body.firstChild);
+
+      // Wire cart link
+      var cartLink = document.getElementById('tgi401-cart-link');
+      if (cartLink) {
+        cartLink.addEventListener('click', function(e) {
+          e.preventDefault();
+          var cartBtn = document.querySelector('.cart-button-2');
+          if (cartBtn) cartBtn.click();
+        });
       }
 
 
@@ -62,7 +74,7 @@
         logoWrap.id = 'tgi401-mobile-logo';
         logoWrap.style.cssText = [
           'text-align: center',
-          'padding: 24px 32px 8px',
+          'padding: 8px 32px 0',
           'width: 100%'
         ].join(';');
 
@@ -70,8 +82,8 @@
         logoImg.src = 'https://401files.vercel.app/logo-chrome.webp';
         logoImg.alt = 'The Girls in 401';
         logoImg.style.cssText = [
-          'width: 75%',
-          'max-width: 300px',
+          'width: 65%',
+          'max-width: 260px',
           'height: auto',
           'filter: drop-shadow(0 4px 12px rgba(0,0,0,0.15))',
           'margin: 0 auto',

@@ -232,10 +232,23 @@
       // and route them to the product modal instead of Webflow popups
 
 
-      /* ---- MARK EMPTY CELLS ---- */
+      /* ---- HIDE SPECIFIC ICONS + MARK HERO + MARK EMPTY CELLS ---- */
+      var hideLabels = ['roommate', 'ex boyfriends'];
       document.querySelectorAll('.mobile-icons .w-layout-cell').forEach(function(cell) {
         if (!cell.querySelector('.draggable3')) {
           cell.classList.add('tgi-cell-empty');
+          return;
+        }
+        var label = cell.querySelector('.text-block-3');
+        var labelText = label ? label.textContent.trim().toLowerCase() : '';
+        // Hide roommate application + ex boyfriend's trash can
+        if (hideLabels.indexOf(labelText) !== -1) {
+          cell.style.display = 'none';
+          return;
+        }
+        // The Shop icon gets hero treatment (biggest, full width)
+        if (labelText === 'the shop') {
+          cell.classList.add('tgi-hero-icon');
         }
       });
 

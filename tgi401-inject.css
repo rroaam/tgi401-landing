@@ -238,7 +238,7 @@
     height: auto !important;
   }
 
-  /* Icon images — compact for 3-col, single viewport fit */
+  /* Icon images — compact for grid, single viewport fit */
   .mobile-icons .draggable3 > img,
   .mobile-icons .draggable3-copy > img,
   .mobile-icons .draggable3 img,
@@ -250,6 +250,23 @@
     object-fit: contain !important;
     display: block !important;
     filter: drop-shadow(0 2px 6px rgba(0,0,0,0.15)) !important;
+  }
+
+  /* Hero icon — The Shop gets the biggest treatment */
+  .mobile-icons .w-layout-cell.tgi-hero-icon {
+    grid-column: 1 / -1 !important;
+    padding: 12px 4px 8px !important;
+  }
+  .mobile-icons .tgi-hero-icon .draggable3 img,
+  .mobile-icons .tgi-hero-icon .draggable3-copy img {
+    width: 100px !important;
+    height: 100px !important;
+    min-width: 100px !important;
+    min-height: 100px !important;
+  }
+  .mobile-icons .tgi-hero-icon .text-block-3 {
+    font-size: 15px !important;
+    margin-top: 6px !important;
   }
 
   /* Icon labels */

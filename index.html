@@ -7,8 +7,17 @@
 <meta name="description" content="Graphic tees & hats inspired by roommate culture. Drop 01 is live.">
 <meta property="og:title" content="The Girls in 401 — Drop 01">
 <meta property="og:description" content="Graphic tees & hats made by roommates. Limited qty.">
-<meta property="og:image" content="model2.jpeg">
+<meta property="og:image" content="https://401files.vercel.app/model2.webp">
 <meta name="theme-color" content="#c8ddf2">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="canonical" href="https://401files.vercel.app/">
+<meta property="og:image" content="https://401files.vercel.app/model2.webp">
+<meta property="og:url" content="https://401files.vercel.app/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The Girls in 401 — Drop 01">
+<meta name="twitter:description" content="Graphic tees & hats made by roommates. Limited qty.">
+<meta name="twitter:image" content="https://401files.vercel.app/model2.webp">
 <style>
 /* ============================================
    TGI401 — LIGHT MODE / CLOUD BLUE / iOS CORE
@@ -39,7 +48,7 @@
   --pink-glow: rgba(232,69,122,0.15);
 
   --chrome: #4a5568;
-  --chrome-light: #7a9bc0;
+  --chrome-light: #3d6b96;
   --ink: #1a1a2e;
 
   --font-display: 'HelveticaNeueLTPro', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
@@ -391,6 +400,46 @@ body {
   letter-spacing: 2px; color: #a0b5cc;
 }
 
+/* ---- SKIP LINK ---- */
+.skip-link {
+  position: absolute; top: -100%; left: 50%;
+  transform: translateX(-50%);
+  padding: 8px 16px; border-radius: 6px;
+  background: var(--ink); color: var(--white);
+  font-family: var(--font-display); font-weight: 700;
+  font-size: 13px; letter-spacing: var(--kerning);
+  z-index: 100; text-decoration: none;
+}
+.skip-link:focus { top: 8px; }
+
+/* ---- FOCUS STATES ---- */
+:focus-visible {
+  outline: 2px solid var(--pink-hot);
+  outline-offset: 2px;
+}
+.link-row:focus-visible {
+  outline: 2px solid var(--pink-hot);
+  outline-offset: 2px;
+  background: var(--white-90);
+  border-color: rgba(0,0,0,0.12);
+}
+.shop-btn:focus-visible, .os-btn-pink:focus-visible {
+  outline: 2px solid var(--white);
+  outline-offset: 2px;
+}
+.os-input:focus-visible {
+  outline: none;
+  border-color: var(--pink-hot);
+  box-shadow: 0 0 0 3px var(--pink-glow);
+}
+
+/* ---- SR ONLY ---- */
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
+
 /* ---- ANIMATIONS ---- */
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(14px); }
@@ -442,8 +491,10 @@ body {
 
 <div class="page">
 
-  <!-- Status bar -->
-  <div class="status-bar">
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- Status bar (decorative) -->
+  <div class="status-bar" aria-hidden="true">
     <span>4:01</span>
     <div class="status-icons">
       <span>&#9733;</span>
@@ -451,41 +502,49 @@ body {
     </div>
   </div>
 
+  <main id="main">
+
   <!-- Logo — LARGE -->
   <div class="logo-section fade-in d1">
-    <img src="logo-chrome.png" alt="TGI401">
+    <picture>
+      <source srcset="logo-chrome.webp" type="image/webp">
+      <img src="logo-chrome-sm.png" alt="The Girls in 401 — TGI401 logo" width="340" height="auto">
+    </picture>
     <div class="tagline">thegirlsin401.com</div>
   </div>
 
   <!-- Hero — OS Window with model image + overlay text -->
   <div class="hero-window fade-in d2" style="position:relative;">
     <div class="os-window">
-      <div class="os-titlebar">
+      <div class="os-titlebar" aria-hidden="true">
         <span class="os-dot red"></span>
         <span class="os-dot yellow"></span>
         <span class="os-dot green"></span>
         <span class="os-titlebar-text">drop_01_lookbook.jpg</span>
       </div>
       <div class="hero-img-container">
-        <img src="model2.jpeg" alt="Drop 01 Lookbook" loading="eager">
+        <picture>
+          <source srcset="model2.webp" type="image/webp">
+          <img src="model2.jpeg" alt="Two models wearing The Roomie Tee from Drop 01, shot against a blue sky backdrop" width="398" height="360" loading="eager">
+        </picture>
         <div class="hero-overlay">
           <div class="hero-overlay-text">DROP 01 — THE ROOMIE COLLECTION</div>
           <div class="hero-overlay-sub">LIMITED QTY REMAINING</div>
         </div>
       </div>
     </div>
-    <div class="sparkle" style="top:50px;right:24px;animation-delay:0s;"></div>
-    <div class="sparkle" style="top:140px;left:20px;animation-delay:0.8s;"></div>
-    <div class="sparkle" style="bottom:60px;right:50px;animation-delay:1.5s;"></div>
+    <div class="sparkle" style="top:50px;right:24px;animation-delay:0s;" aria-hidden="true"></div>
+    <div class="sparkle" style="top:140px;left:20px;animation-delay:0.8s;" aria-hidden="true"></div>
+    <div class="sparkle" style="bottom:60px;right:50px;animation-delay:1.5s;" aria-hidden="true"></div>
   </div>
 
   <!-- Roommates -->
   <div class="roommates-section fade-in d2">
     <div class="roommates">
-      <img src="bear.png" class="roommate-avatar" alt="Bear">
-      <img src="snail.png" class="roommate-avatar" alt="Snail">
-      <img src="flamingo.png" class="roommate-avatar" alt="Flamingo">
-      <img src="turtle.png" class="roommate-avatar" alt="Turtle">
+      <picture><source srcset="bear.webp" type="image/webp"><img src="bear-sm.png" class="roommate-avatar" alt="Bear mascot" width="44" height="44" loading="lazy"></picture>
+      <picture><source srcset="snail.webp" type="image/webp"><img src="snail-sm.png" class="roommate-avatar" alt="Snail mascot" width="44" height="44" loading="lazy"></picture>
+      <picture><source srcset="flamingo.webp" type="image/webp"><img src="flamingo-sm.png" class="roommate-avatar" alt="Flamingo mascot" width="44" height="44" loading="lazy"></picture>
+      <picture><source srcset="turtle.webp" type="image/webp"><img src="turtle-sm.png" class="roommate-avatar" alt="Turtle mascot" width="44" height="44" loading="lazy"></picture>
     </div>
     <div class="roommates-label">meet the roommates</div>
   </div>
@@ -505,9 +564,9 @@ body {
   </div>
 
   <!-- Products — OS Window -->
-  <section class="section fade-in d3">
+  <section class="section fade-in d3" aria-label="Shop">
     <div class="os-window">
-      <div class="os-titlebar">
+      <div class="os-titlebar" aria-hidden="true">
         <span class="os-dot red"></span>
         <span class="os-dot yellow"></span>
         <span class="os-dot green"></span>
@@ -517,34 +576,40 @@ body {
         <div class="shop-header">SHOP DROP 01 — LIMITED QTY REMAINING</div>
         <div class="products-grid">
           <div class="product-cell">
-            <img src="shirt-gradient.png" alt="The Roomie Tee" loading="lazy">
+            <picture>
+              <source srcset="shirt-gradient.webp" type="image/webp">
+              <img src="shirt-gradient-sm.png" alt="The Roomie Tee — white graphic t-shirt with TGI401 print" width="300" height="300" loading="lazy">
+            </picture>
             <div class="product-name">The Roomie Tee</div>
             <div class="product-price">$45</div>
             <div class="product-tag">
-              <svg width="7" height="7" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg width="7" height="7" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
               LIMITED
             </div>
           </div>
           <div class="product-cell">
-            <img src="hat-gradient.png" alt="The Roomie Hat" loading="lazy">
+            <picture>
+              <source srcset="hat-gradient.webp" type="image/webp">
+              <img src="hat-gradient-sm.png" alt="The Roomie Hat — structured cap with TGI401 embroidery" width="300" height="300" loading="lazy">
+            </picture>
             <div class="product-name">The Roomie Hat</div>
             <div class="product-price">$55</div>
             <div class="product-tag">
-              <svg width="7" height="7" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg width="7" height="7" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
               LIMITED
             </div>
           </div>
         </div>
-        <a href="#" class="shop-btn" id="shop-all-btn">SHOP ALL</a>
+        <a href="https://thegirlsin401.com/shop" class="shop-btn" id="shop-all-btn">SHOP ALL</a>
       </div>
     </div>
   </section>
 
   <!-- Email capture — OS Alert dialog -->
-  <section class="section fade-in d4">
-    <div class="os-alert">
+  <section class="section fade-in d4" aria-label="Email signup">
+    <div class="os-alert" role="region" aria-label="Get early access to Drop 02">
       <div class="os-alert-body">
-        <div class="os-alert-icon">
+        <div class="os-alert-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
         </div>
         <div class="os-alert-title">1 new request</div>
@@ -554,7 +619,8 @@ body {
         </div>
       </div>
       <form class="os-alert-form" id="capture-form" onsubmit="return handleCapture(event)">
-        <input type="email" class="os-input" placeholder="your email" required autocomplete="email" inputmode="email">
+        <label for="email-input" class="sr-only">Email address</label>
+        <input type="email" id="email-input" class="os-input" placeholder="your email" required autocomplete="email" inputmode="email">
         <button type="submit" class="os-btn-pink">ACCEPT</button>
         <div class="os-alert-fine">we only text when it matters. promise.</div>
       </form>
@@ -562,40 +628,42 @@ body {
   </section>
 
   <!-- Social Links -->
-  <section class="section fade-in d5">
+  <nav class="section fade-in d5" aria-label="Social links">
     <div class="link-stack">
       <a class="link-row" href="https://instagram.com/haileebobailee" target="_blank" rel="noopener">
-        <div class="link-icon ig">
+        <div class="link-icon ig" aria-hidden="true">
           <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
         </div>
         <div class="link-text">
           <span>Stalk us on Instagram</span>
           <div class="link-handle">@haileebobailee</div>
         </div>
-        <span class="link-arrow">&rsaquo;</span>
+        <span class="link-arrow" aria-hidden="true">&rsaquo;</span>
       </a>
       <a class="link-row" href="https://tiktok.com/@haileebobailee" target="_blank" rel="noopener">
-        <div class="link-icon tt">
+        <div class="link-icon tt" aria-hidden="true">
           <svg viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 00-.79-.05A6.34 6.34 0 003.15 15.2a6.34 6.34 0 0010.86 4.48V13.2a8.2 8.2 0 005.58 2.17V12a4.83 4.83 0 01-3.58-1.69V6.69h3.58z"/></svg>
         </div>
         <div class="link-text">
           <span>TikTok</span>
           <div class="link-handle">@haileebobailee</div>
         </div>
-        <span class="link-arrow">&rsaquo;</span>
+        <span class="link-arrow" aria-hidden="true">&rsaquo;</span>
       </a>
-      <a class="link-row" href="#">
-        <div class="link-icon home">
+      <a class="link-row" href="https://thegirlsin401.com" target="_blank" rel="noopener">
+        <div class="link-icon home" aria-hidden="true">
           <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
         </div>
         <div class="link-text">
           <span>Enter apartment 401</span>
-          <div class="link-handle">our story</div>
+          <div class="link-handle">thegirlsin401.com</div>
         </div>
-        <span class="link-arrow">&rsaquo;</span>
+        <span class="link-arrow" aria-hidden="true">&rsaquo;</span>
       </a>
     </div>
-  </section>
+  </nav>
+
+  </main>
 
   <!-- Footer -->
   <footer class="footer fade-in d6">
@@ -617,11 +685,7 @@ function handleCapture(e) {
     input.disabled = false; btn.disabled = false; input.value = '';
   }, 3000);
 }
-document.getElementById('shop-all-btn').addEventListener('click', function(e) {
-  e.preventDefault();
-  // TODO: Replace with Stripe/Shopify URL
-  alert('Connect your Stripe or Shopify store URL here');
-});
+// Shop All links to thegirlsin401.com/shop — update when Stripe checkout is live
 </script>
 
 </body>

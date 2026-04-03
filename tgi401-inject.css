@@ -162,9 +162,9 @@
   .mobile-icons {
     display: grid !important;
     grid-template-columns: 1fr 1fr !important;
-    gap: 4px !important;
-    width: calc(100% - 24px) !important;
-    margin: 0 auto !important;
+    gap: 0 !important;
+    width: calc(100% - 16px) !important;
+    margin: -8px auto 0 !important;
     padding: 0 !important;
     position: relative !important;
     flex: 1 !important;
@@ -175,7 +175,7 @@
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
-    padding: 12px 4px 6px !important;
+    padding: 8px 4px 4px !important;
     background: transparent !important;
     border: none !important;
     border-radius: 0 !important;
@@ -226,11 +226,15 @@
     height: auto !important;
   }
 
-  /* Icon images — iOS home screen size */
+  /* Icon images — uniform size for all icons */
   .mobile-icons .draggable3 > img,
-  .mobile-icons .draggable3-copy > img {
+  .mobile-icons .draggable3-copy > img,
+  .mobile-icons .draggable3 img,
+  .mobile-icons .draggable3-copy img {
     width: 68px !important;
     height: 68px !important;
+    min-width: 68px !important;
+    min-height: 68px !important;
     object-fit: contain !important;
     display: block !important;
     filter: drop-shadow(0 2px 6px rgba(0,0,0,0.15)) !important;

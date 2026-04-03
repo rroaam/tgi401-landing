@@ -96,8 +96,9 @@
         logoWrap.id = 'tgi401-mobile-logo';
         logoWrap.style.cssText = [
           'text-align: center',
-          'padding: 4px 32px 0',
-          'width: 100%'
+          'padding: 0 32px',
+          'width: 100%',
+          'margin-top: -4px'
         ].join(';');
 
         var logoImg = document.createElement('img');

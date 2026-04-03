@@ -1,6 +1,6 @@
 /* ============================================
-   TGI401 — Custom Code Injection v5
-   Plan-based rewrite with verified selectors
+   TGI401 — Custom Code Injection v6
+   Mobile: OS chrome bar + icon grid + sticky shop CTA
    ============================================ */
 
 /* --- CURSOR — Desktop only --- */
@@ -24,18 +24,17 @@
 
 /* ==============================================
    MOBILE (< 768px)
-   Verified against DOM map: /tmp/tgi401-dom-map.md
+   Layout: OS chrome bar → video bg → icon grid → sticky shop CTA
+   No glassmorphism. Clean, retro Mac/iOS feel.
    ============================================== */
 @media screen and (max-width: 767px) {
 
-  /* ---- 0. BLOCKER + CURSOR ---- */
+  /* ---- BLOCKER + CURSOR ---- */
   .horizontal-mobile-block { display: none !important; }
   .cursor-wrapper, .cursor { display: none !important; }
   *, *::before, *::after { cursor: auto !important; }
 
-
-  /* ---- 1. PAGE SCROLLING ---- */
-  /* Webflow: overflow:hidden, height:100% → fix */
+  /* ---- PAGE SCROLLING ---- */
   html, body, .body {
     overflow-y: auto !important;
     overflow-x: hidden !important;
@@ -47,21 +46,21 @@
     display: block !important;
     overflow: visible !important;
     height: auto !important;
-    min-height: auto !important;
     position: relative !important;
   }
 
-  /* CRITICAL: .background is position:fixed;inset:0% → make it flow */
   .background {
     position: relative !important;
     height: auto !important;
-    display: block !important;
+    min-height: 100dvh !important;
+    display: flex !important;
+    flex-direction: column !important;
     overflow: visible !important;
     inset: auto !important;
+    padding-bottom: 80px !important; /* Space for sticky CTA */
   }
 
-
-  /* ---- 2. BACKGROUND VIDEO ---- */
+  /* ---- BACKGROUND VIDEO ---- */
   .bg-desktop { display: none !important; }
   .bg-mobile {
     position: fixed !important;
@@ -72,27 +71,46 @@
   }
 
 
-  /* ---- 3. STICKY NAV ---- */
+  /* ---- NAV: OS Window Chrome Bar ---- */
+  /* Retro Mac title bar: light gradient, traffic light dots, centered title */
   .nav-bar {
     position: sticky !important;
     top: 0 !important;
     z-index: 500 !important;
-    background: rgba(0, 0, 0, 0.75) !important;
-    backdrop-filter: blur(24px) saturate(1.4) !important;
-    -webkit-backdrop-filter: blur(24px) saturate(1.4) !important;
-    padding: 12px 16px !important;
+    /* Retro Mac OS title bar */
+    background: linear-gradient(180deg, #f0f0f0 0%, #d8d8d8 100%) !important;
+    border-bottom: 1px solid #b0b0b0 !important;
+    padding: 8px 14px !important;
     display: flex !important;
     justify-content: space-between !important;
     align-items: center !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important;
   }
+
+  /* Make nav text dark on light bar */
+  .nav-bar, .nav-bar * {
+    color: #333 !important;
+  }
+
+  .nav-bar .logo {
+    filter: brightness(0.3) !important;
+  }
+
   .left-nav { display: none !important; }
   .right-nav { display: none !important; }
   .left-nav-mobile { display: flex !important; }
   .right-nav-mobile { display: flex !important; }
 
+  /* Cart text/icon dark */
+  .cart-button-2, .text-block-26, .cart-quantity-3 {
+    color: #333 !important;
+  }
+  .w-commerce-commercecartopenlinkicon { color: #333 !important; }
 
-  /* ---- 4. NUCLEAR HIDE: Desktop debris ---- */
-  /* These elements have no mobile purpose */
+
+  /* ---- NUCLEAR HIDE ---- */
   .aboutwindow,
   .capdesktop,
   .brandvaluespop,
@@ -105,250 +123,24 @@
   .brand-values-02-backup,
   .draggable-wrap,
   .shopwindow,
-  .tablet-icons {
+  .tablet-icons,
+  .shoppop,
+  .formwindow {
     display: none !important;
   }
 
 
-  /* ---- 5. SHOP CARD (.shoppop) ---- */
-  /* DOM: .shoppop has inline display:none + scale3d(0,0,1) */
-  .shoppop {
-    display: block !important;
-    position: relative !important;
-    width: calc(100% - 32px) !important;
-    max-width: 100% !important;
-    margin: 16px auto !important;
-    height: auto !important;
-    transform: none !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-    pointer-events: auto !important;
-    /* Kill Webflow absolute positioning */
-    top: auto !important;
-    left: auto !important;
-    right: auto !important;
-    bottom: auto !important;
-    /* Glassmorphic card */
-    border-radius: 16px !important;
-    overflow: hidden !important;
-    background: rgba(255, 255, 255, 0.92) !important;
-    backdrop-filter: blur(20px) !important;
-    -webkit-backdrop-filter: blur(20px) !important;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12) !important;
-  }
-
-  /* OS chrome bar */
-  .shoppop .nav {
-    background: linear-gradient(180deg, #f8fafb 0%, #edf2f7 100%) !important;
-    padding: 10px 14px !important;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.06) !important;
-  }
-
-  /* Product list container */
-  /* DOM: .shoppop > .div-block-30 > .hatpop.w-dyn-list > .collection-list.w-dyn-items */
-  .shoppop .div-block-30 {
-    padding: 16px !important;
-  }
-
-  .shoppop .hatpop,
-  .shoppop .collection-list {
-    display: block !important;
-    width: 100% !important;
-  }
-
-  .shoppop .w-dyn-items {
-    display: grid !important;
-    grid-template-columns: 1fr !important;
-    gap: 24px !important;
-  }
-
-  .shoppop .w-dyn-item {
-    width: 100% !important;
-    display: block !important;
-  }
-
-  /* Product link cards */
-  /* DOM: .w-dyn-item > a.link-block-4 > img + .text-block-22 + .text-block-32 */
-  .shoppop .link-block-4 {
-    display: block !important;
-    text-decoration: none !important;
-    color: inherit !important;
-    padding-bottom: 24px !important;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.06) !important;
-  }
-
-  .shoppop .link-block-4:last-child,
-  .shoppop .w-dyn-item:last-child .link-block-4 {
-    border-bottom: none !important;
-    padding-bottom: 0 !important;
-  }
-
-  /* Product images */
-  .shoppop .w-dyn-item img,
-  .shoppop .link-block-4 img {
-    width: 100% !important;
-    aspect-ratio: 1 !important;
-    object-fit: cover !important;
-    border-radius: 12px !important;
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-  }
-
-  /* Product name — DOM: .text-block-22 */
-  .shoppop .text-block-22 {
-    font-size: 18px !important;
-    font-weight: 700 !important;
-    margin-top: 10px !important;
-    color: #1a1a2e !important;
-    letter-spacing: -0.03em !important;
-  }
-
-  /* Product price — DOM: .text-block-32 (NOT .hatprice) */
-  .shoppop .text-block-32 {
-    font-size: 16px !important;
-    color: #1a1a2e !important;
-    margin-top: 4px !important;
-    font-weight: 600 !important;
-  }
-
-  /* Section headings inside shop */
-  .shoppop .text-block-19,
-  .shoppop .text-block-20 {
-    text-align: center !important;
-    margin-bottom: 12px !important;
-    color: #1a1a2e !important;
-  }
-
-
-  /* ---- 6. EMAIL FORM CARD (.formwindow) ---- */
-  /* DOM: .formwindow > #mobiledrag > .draggable4 > div[scale3d(0,0,1)] > .nav + .w-layout-layout > #email-form */
-  .formwindow {
-    display: block !important;
-    position: relative !important;
-    width: calc(100% - 32px) !important;
-    margin: 0 auto 16px !important;
-    height: auto !important;
-    z-index: auto !important;
-    top: auto !important;
-    left: auto !important;
-  }
-
-  /* Un-hide the draggable4 wrapper (overrides [class*="draggable"] kill) */
-  .formwindow .draggable4 {
-    display: block !important;
-    position: relative !important;
-    width: 100% !important;
-    height: auto !important;
-  }
-
-  /* Un-hide the mobiledrag wrapper */
-  .formwindow [id="mobiledrag"] {
-    display: block !important;
-    position: relative !important;
-    width: 100% !important;
-    height: auto !important;
-  }
-
-  /* The anonymous div with scale3d(0,0,1) — target by child combinator */
-  .formwindow .draggable4 > div {
-    transform: none !important;
-    opacity: 1 !important;
-    display: block !important;
-    position: relative !important;
-    width: 100% !important;
-    height: auto !important;
-    /* Glassmorphic card */
-    border-radius: 16px !important;
-    overflow: hidden !important;
-    background: rgba(255, 255, 255, 0.92) !important;
-    backdrop-filter: blur(20px) !important;
-    -webkit-backdrop-filter: blur(20px) !important;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12) !important;
-  }
-
-  /* Form chrome bar */
-  .formwindow .nav {
-    background: linear-gradient(180deg, #f8fafb 0%, #edf2f7 100%) !important;
-    padding: 10px 14px !important;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.06) !important;
-  }
-
-  /* Form content */
-  .formwindow .w-layout-layout {
-    display: block !important;
-    padding: 20px 16px !important;
-  }
-
-  .formwindow .w-layout-cell {
-    width: 100% !important;
-    padding: 0 !important;
-    margin-bottom: 12px !important;
-  }
-
-  /* Form fields */
-  .formwindow .form,
-  .formwindow .form-block {
-    display: block !important;
-    width: 100% !important;
-  }
-
-  .formwindow .field-label {
-    font-size: 13px !important;
-    font-weight: 600 !important;
-    color: #1a1a2e !important;
-    margin-bottom: 4px !important;
-    display: block !important;
-  }
-
-  .formwindow .text-field,
-  .formwindow .w-input {
-    width: 100% !important;
-    min-height: 48px !important;
-    padding: 12px 14px !important;
-    font-size: 16px !important; /* Prevents iOS zoom */
-    border: 1px solid rgba(0, 0, 0, 0.12) !important;
-    border-radius: 10px !important;
-    background: #fff !important;
-    -webkit-appearance: none !important;
-    margin-bottom: 12px !important;
-    box-sizing: border-box !important;
-  }
-
-  .formwindow .text-field:focus,
-  .formwindow .w-input:focus {
-    border-color: #e8457a !important;
-    box-shadow: 0 0 0 3px rgba(232, 69, 122, 0.12) !important;
-    outline: none !important;
-  }
-
-  .formwindow .submit-button,
-  .formwindow input[type="submit"] {
-    width: 100% !important;
-    min-height: 48px !important;
-    padding: 14px !important;
-    background: linear-gradient(135deg, #ff69b4 0%, #d4537e 100%) !important;
-    color: #fff !important;
-    border: none !important;
-    border-radius: 10px !important;
-    font-weight: 700 !important;
-    font-size: 15px !important;
-    letter-spacing: -0.02em !important;
-    -webkit-appearance: none !important;
-    cursor: pointer !important;
-  }
-
-
-  /* ---- 7. MOBILE ICONS GRID ---- */
-  /* DOM: .mobile-icons > .w-layout-cell > #mobiledrag > ._N-copy > .draggable3 > img + .text-block-3 */
+  /* ---- ICON GRID: The main content ---- */
+  /* Clean 2-column grid, no glassmorphism, solid retro cards */
   .mobile-icons {
     display: grid !important;
     grid-template-columns: 1fr 1fr !important;
     gap: 12px !important;
     width: calc(100% - 32px) !important;
-    margin: 16px auto !important;
+    margin: 20px auto !important;
     padding: 0 !important;
     position: relative !important;
+    flex: 1 !important;
   }
 
   .mobile-icons .w-layout-cell {
@@ -356,24 +148,28 @@
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
-    padding: 16px 8px !important;
-    background: rgba(255, 255, 255, 0.15) !important;
-    backdrop-filter: blur(12px) !important;
-    -webkit-backdrop-filter: blur(12px) !important;
+    padding: 20px 12px !important;
+    /* Solid retro card — no glassmorphism */
+    background: rgba(255, 255, 255, 0.88) !important;
+    border: 1px solid #d0d0d0 !important;
     border-radius: 12px !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
     min-height: auto !important;
     height: auto !important;
-    /* Kill Webflow's 180px padding-bottom */
-    padding-bottom: 16px !important;
+    padding-bottom: 20px !important;
+    transition: transform 0.15s ease !important;
+    -webkit-tap-highlight-color: transparent !important;
   }
 
   .mobile-icons .w-layout-cell:active {
-    transform: scale(0.95) !important;
-    background: rgba(255, 255, 255, 0.22) !important;
+    transform: scale(0.96) !important;
+    background: rgba(255, 255, 255, 0.95) !important;
   }
 
-  /* Hide empty cells — :has() fallback via JS .tgi-cell-empty */
+  /* Hide empty cells */
   .mobile-icons .w-layout-cell:not(:has(.draggable3)) {
     display: none !important;
   }
@@ -381,8 +177,7 @@
     display: none !important;
   }
 
-  /* Un-hide icon wrappers inside mobile-icons */
-  /* These were killed by ._1, ._2... and [class*="draggable"] rules */
+  /* Un-hide icon wrappers */
   .mobile-icons [id="mobiledrag"] {
     display: contents !important;
   }
@@ -411,52 +206,48 @@
   /* Icon images */
   .mobile-icons .draggable3 > img,
   .mobile-icons .draggable3-copy > img {
-    width: 48px !important;
-    height: 48px !important;
+    width: 52px !important;
+    height: 52px !important;
     object-fit: contain !important;
     display: block !important;
   }
 
   /* Icon labels */
   .mobile-icons .text-block-3 {
-    font-size: 11px !important;
+    font-size: 12px !important;
     font-weight: 700 !important;
-    margin-top: 6px !important;
+    margin-top: 8px !important;
     text-align: center !important;
-    color: #fff !important;
-    letter-spacing: -0.02em !important;
+    color: #1a1a2e !important;
+    letter-spacing: -0.03em !important;
   }
 
 
-  /* ---- 8. CLOSE BUTTONS: Tappable ---- */
+  /* ---- CLOSE BUTTONS ---- */
   .x, .close, .close2, .close2-copy {
     min-width: 44px !important;
     min-height: 44px !important;
     padding: 10px !important;
-    cursor: pointer !important;
   }
 
 
-  /* ---- 9. BOTTOM SPACING ---- */
-  .section::after {
-    content: '';
-    display: block;
-    height: 40px;
-  }
-
-
-  /* ---- 10. OVERLAY POPUPS (opened via Webflow Interactions) ---- */
+  /* ---- OVERLAY POPUPS (opened via Webflow Interactions on icon tap) ---- */
   .roomiespop[style*="scale3d(1"],
   .bagpopup[style*="scale3d(1"],
-  .brandvaluespop[style*="scale3d(1"] {
+  .brandvaluespop[style*="scale3d(1"],
+  .shoppop[style*="scale3d(1"],
+  .formwindow [style*="scale3d(1"] {
     position: fixed !important;
     inset: 0 !important;
     z-index: 1000 !important;
     overflow-y: auto !important;
-    background: rgba(0, 0, 0, 0.92) !important;
-    backdrop-filter: blur(20px) !important;
-    -webkit-backdrop-filter: blur(20px) !important;
-    padding: 60px 20px 20px !important;
+    background: rgba(255, 255, 255, 0.97) !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: none !important;
+    box-shadow: none !important;
   }
 }
 
@@ -474,9 +265,8 @@
 
 
 /* ==============================================
-   DESKTOP POLISH (all viewports)
+   DESKTOP POLISH
    ============================================== */
-/* Hover states */
 @media (hover: hover) {
   .draggable3, .draggable3-copy,
   .draggable4, .draggable5,
@@ -491,7 +281,6 @@
   }
 }
 
-/* Window transitions */
 .shoppop, .apppop,
 .videowindow, .brandvaluespop,
 .formwindow .apppop, .bagpopup {
@@ -500,7 +289,6 @@
   will-change: transform, opacity !important;
 }
 
-/* Z-index focus */
 .shoppop.tgi-focus, .apppop.tgi-focus,
 .brandvaluespop.tgi-focus, .videowindow.tgi-focus,
 .bagpopup.tgi-focus {
@@ -547,8 +335,7 @@ h1, h2, h3, h4, h5, h6,
   outline-offset: 2px !important;
 }
 
-input:focus-visible, textarea:focus-visible,
-.text-field:focus-visible {
+input:focus-visible, textarea:focus-visible {
   outline: none !important;
   border-color: #e8457a !important;
   box-shadow: 0 0 0 3px rgba(232, 69, 122, 0.15) !important;
@@ -558,7 +345,6 @@ input:focus-visible, textarea:focus-visible,
   position: absolute; top: -100%; left: 50%;
   transform: translateX(-50%);
   padding: 8px 16px; background: #1a1a2e; color: #fff;
-  font-family: 'HelveticaNeueLTPro', 'Helvetica Neue', sans-serif;
   font-weight: 700; font-size: 13px; border-radius: 6px;
   z-index: 10000; text-decoration: none;
 }

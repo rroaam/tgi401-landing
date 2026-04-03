@@ -1,6 +1,6 @@
 /* ============================================
-   TGI401 — Custom Code Injection v3 (JS)
-   Clean mobile + form fix + accessibility
+   TGI401 — Custom Code Injection v5 (JS)
+   Plan-based rewrite with verified selectors
    ============================================ */
 (function() {
   'use strict';
@@ -11,121 +11,200 @@
   }
 
   ready(function() {
+    var isMobile = window.innerWidth < 768;
 
-    /* --- MOBILE: Ensure page is scrollable --- */
-    function handleViewport() {
-      var isMobile = window.innerWidth < 768;
+    /* ---- 0. ALWAYS: Kill rotation blocker ---- */
+    var blocker = document.querySelector('.horizontal-mobile-block');
+    if (blocker) blocker.style.display = 'none';
 
-      // Always hide the rotate blocker
-      var blocker = document.querySelector('.horizontal-mobile-block');
-      if (blocker) blocker.style.display = 'none';
 
-      if (isMobile) {
-        // Force shop popup visible (it's the key content)
-        var shop = document.querySelector('.shoppop');
-        if (shop) {
-          shop.style.transform = 'scale3d(1, 1, 1)';
-          shop.style.opacity = '1';
-          shop.style.display = 'block';
-          shop.style.visibility = 'visible';
+    if (isMobile) {
+
+      /* ---- 1. FORCE .shoppop VISIBLE ---- */
+      /* DOM: .shoppop has inline display:none + scale3d(0,0,1) */
+      var shop = document.querySelector('.shoppop');
+      if (shop) {
+        shop.style.display = 'block';
+        shop.style.transform = 'none';
+        shop.style.opacity = '1';
+        shop.style.visibility = 'visible';
+        shop.style.position = 'relative';
+        shop.style.top = 'auto';
+        shop.style.left = 'auto';
+      }
+
+
+      /* ---- 2. FORCE FORMWINDOW VISIBLE ---- */
+      /* DOM: .formwindow > #mobiledrag > .draggable4 > div[scale3d(0,0,1)] */
+      var formWin = document.querySelector('.formwindow');
+      if (formWin) {
+        var draggable4 = formWin.querySelector('.draggable4');
+        if (draggable4) {
+          var hiddenDiv = draggable4.querySelector(':scope > div');
+          if (hiddenDiv) {
+            hiddenDiv.style.transform = 'none';
+            hiddenDiv.style.opacity = '1';
+            hiddenDiv.style.display = 'block';
+            hiddenDiv.style.visibility = 'visible';
+          }
         }
+      }
 
-        // Force email form visible
-        var forms = document.querySelectorAll('.apppop');
-        forms.forEach(function(f) {
-          // Only show the one inside formwindow (email capture)
-          if (f.closest('.formwindow')) {
-            f.style.transform = 'scale3d(1, 1, 1)';
-            f.style.opacity = '1';
-            f.style.display = 'block';
-            f.style.visibility = 'visible';
+
+      /* ---- 3. FORCE PRODUCT IMAGES TO LOAD ---- */
+      /* CMS-bound images may not load when parent was display:none */
+      var shopImages = document.querySelectorAll('.shoppop img[loading="lazy"]');
+      shopImages.forEach(function(img) {
+        img.removeAttribute('loading');
+        // Re-trigger srcset evaluation
+        if (img.srcset) {
+          var srcset = img.srcset;
+          img.srcset = '';
+          requestAnimationFrame(function() { img.srcset = srcset; });
+        }
+        // Force reload if src exists
+        if (img.src) {
+          var src = img.src;
+          img.src = '';
+          img.src = src;
+        }
+      });
+
+
+      /* ---- 4. DISABLE TOUCH-DRAG ON MOBILE ICONS ---- */
+      /* Webflow attaches touchmove listeners to .mobiledrag that conflict with scrolling */
+      document.querySelectorAll('.mobiledrag').forEach(function(el) {
+        el.addEventListener('touchmove', function(e) {
+          e.stopPropagation();
+        }, { passive: true, capture: true });
+        // Clear any drag positioning
+        el.style.left = '';
+        el.style.top = '';
+        el.style.position = '';
+      });
+
+
+      /* ---- 5. MARK EMPTY CELLS (JS fallback for :has()) ---- */
+      document.querySelectorAll('.mobile-icons .w-layout-cell').forEach(function(cell) {
+        if (!cell.querySelector('.draggable3')) {
+          cell.classList.add('tgi-cell-empty');
+        }
+      });
+
+
+      /* ---- 6. MUTATION OBSERVER: Guard against Webflow IX2 ---- */
+      /* If Webflow interactions re-apply scale3d(0,0,1), immediately override */
+      var observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(m) {
+          if (m.type === 'attributes' && m.attributeName === 'style') {
+            var el = m.target;
+            var style = el.getAttribute('style') || '';
+            if (style.indexOf('scale3d(0') !== -1) {
+              el.style.transform = 'none';
+              el.style.opacity = '1';
+              el.style.display = 'block';
+              el.style.visibility = 'visible';
+            }
           }
         });
+      });
 
-        // Hide desktop cursor
-        var cursor = document.querySelector('.cursor-wrapper');
-        if (cursor) cursor.style.display = 'none';
+      if (shop) {
+        observer.observe(shop, { attributes: true, attributeFilter: ['style'] });
       }
-    }
+      var formInner = document.querySelector('.formwindow .draggable4 > div');
+      if (formInner) {
+        observer.observe(formInner, { attributes: true, attributeFilter: ['style'] });
+      }
 
-    handleViewport();
-    window.addEventListener('resize', handleViewport);
+
+      /* ---- 7. HIDE CURSOR ---- */
+      var cursor = document.querySelector('.cursor-wrapper');
+      if (cursor) cursor.style.display = 'none';
+
+    } /* end isMobile */
 
 
-    /* --- EMAIL FORM: Fix and wire submission --- */
+    /* ---- EMAIL FORM: Fix field names + wire submission ---- */
+    /* Applies on all viewports (form is used on desktop too) */
     var emailForm = document.querySelector('#email-form');
     if (emailForm) {
       emailForm.method = 'post';
 
-      // Fix duplicate field names
-      var inputs = emailForm.querySelectorAll('.text-field');
-      if (inputs.length >= 2) {
-        inputs[0].name = 'instagram';
-        inputs[0].id = 'instagram-field';
-        inputs[1].name = 'email';
-        inputs[1].id = 'email-field';
-        inputs[1].type = 'email';
-      } else if (inputs.length === 1) {
-        inputs[0].name = 'email';
-        inputs[0].id = 'email-field';
-        inputs[0].type = 'email';
-      }
+      // Fix duplicate "Name 2" field names
+      // DOM: input[name="Name 2"][id="name-3"] = Instagram
+      //      input[name="Name 2"][id="name-2"] = Email
+      var igField = emailForm.querySelector('#name-3');
+      var emailField = emailForm.querySelector('#name-2');
+      if (igField) { igField.name = 'Instagram'; }
+      if (emailField) { emailField.name = 'Email'; emailField.type = 'email'; }
 
       emailForm.addEventListener('submit', function(e) {
         e.preventDefault();
-        var emailInput = emailForm.querySelector('[name="email"]') || emailForm.querySelector('.text-field');
-        var igInput = emailForm.querySelector('[name="instagram"]');
-        var email = emailInput ? emailInput.value : '';
-        if (!email || !email.includes('@')) return;
+        var email = emailField ? emailField.value : '';
+        if (!email || email.indexOf('@') === -1) return;
 
         var siteEl = document.querySelector('[data-wf-site]');
-        var wfPageId = emailForm.getAttribute('data-wf-page-id');
-        var wfElementId = emailForm.getAttribute('data-wf-element-id');
+        var pageId = emailForm.getAttribute('data-wf-page-id');
+        var elemId = emailForm.getAttribute('data-wf-element-id');
 
-        if (siteEl && wfPageId && wfElementId) {
+        if (siteEl && pageId && elemId) {
+          var siteId = siteEl.getAttribute('data-wf-site');
           var params = {
             'name': 'Email Form',
             'source': window.location.href,
             'test': 'false',
             'dolphin': 'false',
-            'pageId': wfPageId,
-            'elementId': wfElementId,
-            'siteId': siteEl.getAttribute('data-wf-site'),
+            'pageId': pageId,
+            'elementId': elemId,
+            'siteId': siteId,
             'fields[Email]': email
           };
-          if (igInput && igInput.value) params['fields[Instagram]'] = igInput.value;
+          if (igField && igField.value) {
+            params['fields[Instagram]'] = igField.value;
+          }
 
-          fetch('https://webflow.com/api/v1/form/' + siteEl.getAttribute('data-wf-site'), {
+          fetch('https://webflow.com/api/v1/form/' + siteId, {
             method: 'POST',
-            headers: { 'Accept': 'application/json', 'Content-Type': 'application/x-www-form-urlencoded' },
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
             body: new URLSearchParams(params)
           }).then(function() {
-            showSuccess(emailForm, emailInput);
+            showSuccess();
           }).catch(function() {
-            showSuccess(emailForm, emailInput);
+            showSuccess(); // Show success anyway — Webflow may reject CORS but still log
           });
         } else {
-          showSuccess(emailForm, emailInput);
+          showSuccess();
+        }
+
+        function showSuccess() {
+          var done = emailForm.closest('.w-form, .form-block');
+          if (done) {
+            var successDiv = done.querySelector('.w-form-done');
+            if (successDiv) {
+              successDiv.style.display = 'block';
+              emailForm.style.display = 'none';
+              return;
+            }
+          }
+          // Fallback
+          var btn = emailForm.querySelector('[type="submit"]');
+          if (btn) {
+            btn.value = "YOU'RE IN";
+            btn.style.background = '#28c840';
+            if (emailField) emailField.disabled = true;
+            if (igField) igField.disabled = true;
+            btn.disabled = true;
+          }
         }
       });
     }
 
-    function showSuccess(form, input) {
-      var done = form.parentElement.querySelector('.w-form-done');
-      if (done) { done.style.display = 'block'; form.style.display = 'none'; }
-      else if (input) {
-        var btn = form.querySelector('[type="submit"], .submit-button');
-        if (btn) {
-          btn.textContent = "YOU'RE IN";
-          btn.style.background = '#28c840';
-          input.disabled = true;
-          btn.disabled = true;
-        }
-      }
-    }
 
-
-    /* --- SHIZE → SIZE fix (product pages) --- */
+    /* ---- SHIZE → SIZE (product pages) ---- */
     var sizeMap = {
       'Shize': 'Size', 'ShizeSelect': 'Select Size',
       'Shmall': 'XS', 'shmall': 'XS',
@@ -133,7 +212,7 @@
       'shLarge': 'L/XL', 'shlarge': 'L/XL'
     };
 
-    document.querySelectorAll('.field-label, .field-label-5, label, option, select option').forEach(function(el) {
+    document.querySelectorAll('.field-label, .field-label-5, label, select option').forEach(function(el) {
       var t = el.textContent.trim();
       if (sizeMap[t]) el.textContent = sizeMap[t];
     });
@@ -142,24 +221,14 @@
       Array.from(sel.options).forEach(function(opt) {
         if (sizeMap[opt.textContent.trim()]) opt.textContent = sizeMap[opt.textContent.trim()];
       });
-      if ((sel.getAttribute('aria-label') || '').toLowerCase().includes('shize')) {
-        sel.setAttribute('aria-label', 'Select Size');
-      }
     });
 
-    // Show the real XS/S/M/L button block if hidden
-    var sizeBlock = document.querySelector('.size.w-condition-invisible');
-    if (sizeBlock) {
-      sizeBlock.classList.remove('w-condition-invisible');
-      sizeBlock.style.display = 'flex';
-    }
 
-
-    /* --- Z-INDEX: Click-to-focus windows --- */
-    var windows = document.querySelectorAll('.shoppop, .apppop, .brandvaluespop, .videowindow, .bagpopup');
-    windows.forEach(function(win) {
+    /* ---- Z-INDEX: Click-to-focus (desktop) ---- */
+    var wins = document.querySelectorAll('.shoppop, .apppop, .brandvaluespop, .videowindow, .bagpopup');
+    wins.forEach(function(win) {
       function focus() {
-        windows.forEach(function(w) { w.classList.remove('tgi-focus'); });
+        wins.forEach(function(w) { w.classList.remove('tgi-focus'); });
         win.classList.add('tgi-focus');
       }
       win.addEventListener('mousedown', focus);
@@ -167,7 +236,7 @@
     });
 
 
-    /* --- ACCESSIBILITY: Skip link + landmarks --- */
+    /* ---- ACCESSIBILITY: Skip link + landmarks ---- */
     var skip = document.createElement('a');
     skip.className = 'tgi401-skip-link';
     skip.href = '#main-content';

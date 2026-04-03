@@ -1,13 +1,10 @@
 /* ============================================
-   TGI401 — Custom Code Injection (JS)
-   Fixes: Mobile layout, ShizeSelect label,
-   email capture form, accessibility
+   TGI401 — Custom Code Injection v3 (JS)
+   Clean mobile + form fix + accessibility
    ============================================ */
-
 (function() {
   'use strict';
 
-  // Wait for DOM
   function ready(fn) {
     if (document.readyState !== 'loading') fn();
     else document.addEventListener('DOMContentLoaded', fn);
@@ -15,65 +12,52 @@
 
   ready(function() {
 
-    /* --- FIX #1: MOBILE RESPONSIVE LAYOUT --- */
-    // Replace "Please Rotate Device" with mobile-friendly content
-    var rotateBlock = document.querySelector('.horizontal-mobile-block');
-    if (rotateBlock && window.innerWidth < 768) {
-      rotateBlock.style.display = 'none';
-      // Ensure main section is visible
-      var section = document.querySelector('.section');
-      if (section) {
-        section.style.display = 'block';
-        section.style.overflow = 'auto';
-      }
-    }
+    /* --- MOBILE: Ensure page is scrollable --- */
+    function handleViewport() {
+      var isMobile = window.innerWidth < 768;
 
-    // On resize, toggle mobile/desktop
-    var mobileBreakpoint = 768;
-    function handleResize() {
-      var isMobile = window.innerWidth < mobileBreakpoint;
-      var rotateEl = document.querySelector('.horizontal-mobile-block');
-      var sectionEl = document.querySelector('.section');
+      // Always hide the rotate blocker
+      var blocker = document.querySelector('.horizontal-mobile-block');
+      if (blocker) blocker.style.display = 'none';
 
-      if (rotateEl) rotateEl.style.display = 'none';
-      if (sectionEl) {
-        sectionEl.style.display = 'block';
-        if (isMobile) {
-          sectionEl.style.overflow = 'auto';
-          sectionEl.style.height = 'auto';
+      if (isMobile) {
+        // Force shop popup visible (it's the key content)
+        var shop = document.querySelector('.shoppop');
+        if (shop) {
+          shop.style.transform = 'scale3d(1, 1, 1)';
+          shop.style.opacity = '1';
+          shop.style.display = 'block';
+          shop.style.visibility = 'visible';
         }
-      }
 
-      // Hide custom cursor on mobile/tablet
-      var cursorWrap = document.querySelector('.cursor-wrapper');
-      if (cursorWrap) {
-        cursorWrap.style.display = isMobile ? 'none' : '';
+        // Force email form visible
+        var forms = document.querySelectorAll('.apppop');
+        forms.forEach(function(f) {
+          // Only show the one inside formwindow (email capture)
+          if (f.closest('.formwindow')) {
+            f.style.transform = 'scale3d(1, 1, 1)';
+            f.style.opacity = '1';
+            f.style.display = 'block';
+            f.style.visibility = 'visible';
+          }
+        });
+
+        // Hide desktop cursor
+        var cursor = document.querySelector('.cursor-wrapper');
+        if (cursor) cursor.style.display = 'none';
       }
     }
 
-    handleResize();
-    window.addEventListener('resize', handleResize);
+    handleViewport();
+    window.addEventListener('resize', handleViewport);
 
 
-    /* --- FIX #1b: MAKE POPUP WINDOWS TAPPABLE ON MOBILE --- */
-    if (window.innerWidth < 768) {
-      // Force all popup windows to be visible and stacked
-      var popups = document.querySelectorAll('.shoppop, .apppop, .formwindow .apppop');
-      popups.forEach(function(popup) {
-        popup.style.transform = 'scale3d(1, 1, 1)';
-        popup.style.opacity = '1';
-        popup.style.display = 'block';
-      });
-    }
-
-
-    /* --- FIX #3: EMAIL CAPTURE FORM --- */
+    /* --- EMAIL FORM: Fix and wire submission --- */
     var emailForm = document.querySelector('#email-form');
     if (emailForm) {
-      // Fix: change GET to POST
       emailForm.method = 'post';
 
-      // Fix: deduplicate field names (both inputs had name="name-2")
+      // Fix duplicate field names
       var inputs = emailForm.querySelectorAll('.text-field');
       if (inputs.length >= 2) {
         inputs[0].name = 'instagram';
@@ -89,19 +73,16 @@
 
       emailForm.addEventListener('submit', function(e) {
         e.preventDefault();
-
         var emailInput = emailForm.querySelector('[name="email"]') || emailForm.querySelector('.text-field');
         var igInput = emailForm.querySelector('[name="instagram"]');
         var email = emailInput ? emailInput.value : '';
-
         if (!email || !email.includes('@')) return;
 
-        // Submit via Webflow's native form handler
-        var siteId = document.querySelector('[data-wf-site]');
+        var siteEl = document.querySelector('[data-wf-site]');
         var wfPageId = emailForm.getAttribute('data-wf-page-id');
         var wfElementId = emailForm.getAttribute('data-wf-element-id');
 
-        if (siteId && wfPageId && wfElementId) {
+        if (siteEl && wfPageId && wfElementId) {
           var params = {
             'name': 'Email Form',
             'source': window.location.href,
@@ -109,42 +90,30 @@
             'dolphin': 'false',
             'pageId': wfPageId,
             'elementId': wfElementId,
-            'siteId': siteId.getAttribute('data-wf-site'),
+            'siteId': siteEl.getAttribute('data-wf-site'),
             'fields[Email]': email
           };
-          if (igInput && igInput.value) {
-            params['fields[Instagram]'] = igInput.value;
-          }
+          if (igInput && igInput.value) params['fields[Instagram]'] = igInput.value;
 
-          fetch('https://webflow.com/api/v1/form/' + siteId.getAttribute('data-wf-site'), {
+          fetch('https://webflow.com/api/v1/form/' + siteEl.getAttribute('data-wf-site'), {
             method: 'POST',
             headers: { 'Accept': 'application/json', 'Content-Type': 'application/x-www-form-urlencoded' },
             body: new URLSearchParams(params)
           }).then(function() {
-            showFormSuccess(emailForm, emailInput);
+            showSuccess(emailForm, emailInput);
           }).catch(function() {
-            // Fallback: still show success (data was likely captured)
-            showFormSuccess(emailForm, emailInput);
+            showSuccess(emailForm, emailInput);
           });
         } else {
-          showFormSuccess(emailForm, emailInput);
+          showSuccess(emailForm, emailInput);
         }
-
-        // Klaviyo placeholder — uncomment and add list ID when ready
-        // fetch('https://a.klaviyo.com/api/v2/list/LIST_ID/subscribe', {
-        //   method: 'POST',
-        //   headers: { 'Content-Type': 'application/json' },
-        //   body: JSON.stringify({ profiles: [{ email: email }] })
-        // });
       });
     }
 
-    function showFormSuccess(form, input) {
-      var successDiv = form.parentElement.querySelector('.w-form-done');
-      if (successDiv) {
-        successDiv.style.display = 'block';
-        form.style.display = 'none';
-      } else if (input) {
+    function showSuccess(form, input) {
+      var done = form.parentElement.querySelector('.w-form-done');
+      if (done) { done.style.display = 'block'; form.style.display = 'none'; }
+      else if (input) {
         var btn = form.querySelector('[type="submit"], .submit-button');
         if (btn) {
           btn.textContent = "YOU'RE IN";
@@ -156,113 +125,60 @@
     }
 
 
-    /* --- FIX: Z-INDEX CLICK-TO-FOCUS --- */
-    document.querySelectorAll('.shoppop, .apppop, .brandvaluespop, .videowindow, .bagpopup').forEach(function(win) {
-      win.addEventListener('mousedown', function() {
-        document.querySelectorAll('.shoppop, .apppop, .brandvaluespop, .videowindow, .bagpopup').forEach(function(w) {
-          w.classList.remove('tgi-focus');
-        });
-        win.classList.add('tgi-focus');
-      });
-      win.addEventListener('touchstart', function() {
-        document.querySelectorAll('.shoppop, .apppop, .brandvaluespop, .videowindow, .bagpopup').forEach(function(w) {
-          w.classList.remove('tgi-focus');
-        });
-        win.classList.add('tgi-focus');
-      }, { passive: true });
-    });
-
-
-    /* --- FIX #4: SHIZESELECT → SELECT SIZE --- */
-    // Fix the SKU property labels on the product page
-    // "Shize" → "Select Size", "Shmall" → "XS", etc.
+    /* --- SHIZE → SIZE fix (product pages) --- */
     var sizeMap = {
-      'Shize': 'Select Size',
-      'ShizeSelect': 'Select Size',
-      'Shmall': 'XS',
-      'shmall': 'XS',
-      'shMedium': 'S/M',
-      'shmedium': 'S/M',
-      'shLarge': 'L/XL',
-      'shlarge': 'L/XL'
+      'Shize': 'Size', 'ShizeSelect': 'Select Size',
+      'Shmall': 'XS', 'shmall': 'XS',
+      'shMedium': 'S/M', 'shmedium': 'S/M',
+      'shLarge': 'L/XL', 'shlarge': 'L/XL'
     };
 
-    // Replace text in field labels and buttons
-    document.querySelectorAll('.field-label, .button-size, label, option, .w-commerce-commerceaddtocartoptionselect option, select option').forEach(function(el) {
-      var text = el.textContent.trim();
-      if (sizeMap[text]) {
-        el.textContent = sizeMap[text];
-      }
+    document.querySelectorAll('.field-label, .field-label-5, label, option, select option').forEach(function(el) {
+      var t = el.textContent.trim();
+      if (sizeMap[t]) el.textContent = sizeMap[t];
     });
 
-    // Also fix select elements
     document.querySelectorAll('select').forEach(function(sel) {
       Array.from(sel.options).forEach(function(opt) {
-        var val = opt.textContent.trim();
-        if (sizeMap[val]) {
-          opt.textContent = sizeMap[val];
-        }
+        if (sizeMap[opt.textContent.trim()]) opt.textContent = sizeMap[opt.textContent.trim()];
       });
-      // Fix the select label/aria-label
-      var label = sel.getAttribute('aria-label') || '';
-      if (label.toLowerCase().includes('shize')) {
+      if ((sel.getAttribute('aria-label') || '').toLowerCase().includes('shize')) {
         sel.setAttribute('aria-label', 'Select Size');
       }
     });
 
-    // Fix any heading/text that says "Shize"
-    document.querySelectorAll('h1, h2, h3, h4, h5, h6, p, span, div, label').forEach(function(el) {
-      if (el.children.length === 0 && el.textContent.trim() in sizeMap) {
-        el.textContent = sizeMap[el.textContent.trim()];
-      }
-    });
-
-
-    /* --- FIX: PRODUCT PAGE — Fix remaining Shize labels --- */
-    // Belt-and-suspenders: fix any Shize labels the CMS update didn't catch
-    document.querySelectorAll('.field-label-5, [for*="option-set"]').forEach(function(el) {
-      if (el.textContent.trim().toLowerCase().includes('shize')) {
-        el.textContent = 'Size';
-      }
-    });
-    document.querySelectorAll('select').forEach(function(sel) {
-      // Fix placeholder
-      if (sel.options[0] && sel.options[0].textContent.toLowerCase().includes('shize')) {
-        sel.options[0].textContent = 'Select Size';
-      }
-    });
-
-    /* --- FIX: PRODUCT PAGE — Show size buttons if hidden --- */
+    // Show the real XS/S/M/L button block if hidden
     var sizeBlock = document.querySelector('.size.w-condition-invisible');
     if (sizeBlock) {
       sizeBlock.classList.remove('w-condition-invisible');
       sizeBlock.style.display = 'flex';
-      // Hide the garbled dropdown
-      var garbledSelect = document.querySelector('.select-field-3');
-      if (garbledSelect) garbledSelect.closest('.div-block-30, .w-embed, div')?.style.setProperty('display', 'none', 'important');
     }
 
 
-    /* --- ACCESSIBILITY: SKIP LINK --- */
-    var skipLink = document.createElement('a');
-    skipLink.className = 'tgi401-skip-link';
-    skipLink.href = '#main-content';
-    skipLink.textContent = 'Skip to content';
-    document.body.insertBefore(skipLink, document.body.firstChild);
+    /* --- Z-INDEX: Click-to-focus windows --- */
+    var windows = document.querySelectorAll('.shoppop, .apppop, .brandvaluespop, .videowindow, .bagpopup');
+    windows.forEach(function(win) {
+      function focus() {
+        windows.forEach(function(w) { w.classList.remove('tgi-focus'); });
+        win.classList.add('tgi-focus');
+      }
+      win.addEventListener('mousedown', focus);
+      win.addEventListener('touchstart', focus, { passive: true });
+    });
 
-    // Add main content landmark
-    var mainSection = document.querySelector('.section');
-    if (mainSection) {
-      mainSection.setAttribute('role', 'main');
-      mainSection.id = 'main-content';
-    }
 
-    // Add nav landmark
-    var navBar = document.querySelector('.nav-bar');
-    if (navBar) {
-      navBar.setAttribute('role', 'navigation');
-      navBar.setAttribute('aria-label', 'Main navigation');
-    }
+    /* --- ACCESSIBILITY: Skip link + landmarks --- */
+    var skip = document.createElement('a');
+    skip.className = 'tgi401-skip-link';
+    skip.href = '#main-content';
+    skip.textContent = 'Skip to content';
+    document.body.insertBefore(skip, document.body.firstChild);
+
+    var main = document.querySelector('.section');
+    if (main) { main.setAttribute('role', 'main'); main.id = 'main-content'; }
+
+    var nav = document.querySelector('.nav-bar');
+    if (nav) { nav.setAttribute('role', 'navigation'); nav.setAttribute('aria-label', 'Main'); }
 
   });
 })();

@@ -71,43 +71,70 @@
   }
 
 
-  /* ---- NAV: OS Window Chrome Bar ---- */
-  /* Retro Mac title bar: light gradient, traffic light dots, centered title */
+  /* ---- NAV: Hide default Webflow nav ---- */
   .nav-bar {
-    position: sticky !important;
-    top: 0 !important;
-    z-index: 500 !important;
-    /* Retro Mac OS title bar */
-    background: linear-gradient(180deg, #f0f0f0 0%, #d8d8d8 100%) !important;
-    border-bottom: 1px solid #b0b0b0 !important;
-    padding: 8px 14px !important;
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important;
+    display: none !important;
   }
-
-  /* Make nav text dark on light bar */
-  .nav-bar, .nav-bar * {
-    color: #333 !important;
-  }
-
-  .nav-bar .logo {
-    filter: brightness(0.3) !important;
-  }
-
   .left-nav { display: none !important; }
   .right-nav { display: none !important; }
-  .left-nav-mobile { display: flex !important; }
-  .right-nav-mobile { display: flex !important; }
+  .left-nav-mobile { display: none !important; }
+  .right-nav-mobile { display: none !important; }
 
-  /* Cart text/icon dark */
-  .cart-button-2, .text-block-26, .cart-quantity-3 {
-    color: #333 !important;
+  /* ---- RETRO MAC BROWSER CHROME (injected via JS) ---- */
+  #tgi401-chrome-bar {
+    position: sticky;
+    top: 0;
+    z-index: 500;
+    background: linear-gradient(180deg, #f8f8f8 0%, #e0e0e0 100%);
+    border-bottom: 1px solid #b5b5b5;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.06);
   }
-  .w-commerce-commercecartopenlinkicon { color: #333 !important; }
+
+  #tgi401-chrome-bar .dots {
+    display: flex;
+    gap: 7px;
+    flex-shrink: 0;
+  }
+
+  #tgi401-chrome-bar .dot {
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+  }
+  #tgi401-chrome-bar .dot-red { background: #ff5f57; border: 1px solid #e0443e; }
+  #tgi401-chrome-bar .dot-yellow { background: #febc2e; border: 1px solid #dea123; }
+  #tgi401-chrome-bar .dot-green { background: #28c840; border: 1px solid #1aab29; }
+
+  #tgi401-chrome-bar .title {
+    flex: 1;
+    text-align: center;
+    font-family: 'HelveticaNeueLTPro', 'Helvetica Neue', 'Helvetica', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: -0.03em;
+    color: #333;
+  }
+
+  #tgi401-chrome-bar .cart-link {
+    flex-shrink: 0;
+    font-family: 'HelveticaNeueLTPro', 'Helvetica Neue', 'Helvetica', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: #333;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  #tgi401-chrome-bar .cart-link svg {
+    width: 16px;
+    height: 16px;
+  }
 
 
   /* ---- NUCLEAR HIDE ---- */

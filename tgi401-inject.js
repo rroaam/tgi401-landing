@@ -31,6 +31,29 @@
       });
 
 
+      /* ---- RETRO MAC BROWSER CHROME BAR ---- */
+      var section = document.querySelector('.section');
+      if (section) {
+        var chrome = document.createElement('div');
+        chrome.id = 'tgi401-chrome-bar';
+        chrome.innerHTML = [
+          '<div class="dots">',
+          '  <div class="dot dot-red"></div>',
+          '  <div class="dot dot-yellow"></div>',
+          '  <div class="dot dot-green"></div>',
+          '</div>',
+          '<div class="title">thegirlsin401.com</div>',
+          '<a class="cart-link" href="#" onclick="document.querySelector(\'.cart-button-2\')?.click(); return false;">',
+          '  <svg viewBox="0 0 17 17" fill="none"><path d="M2.6,2L0,2L0,0L4.4,0L4.8,4L16,4L16,9.9L3.8,12.4L2.6,2Z M15.5,17C14.7,17,14,16.3,14,15.5S14.7,14,15.5,14S17,14.7,17,15.5S16.3,17,15.5,17Z M5.5,17C4.7,17,4,16.3,4,15.5S4.7,14,5.5,14S7,14.7,7,15.5S6.3,17,5.5,17Z" fill="currentColor"/></svg>',
+          '  Cart',
+          '</a>'
+        ].join('');
+
+        // Insert as first child of .section (before .nav-bar)
+        section.insertBefore(chrome, section.firstChild);
+      }
+
+
       /* ---- CHROME LOGO ---- */
       /* Insert large TGI401 chrome logo above the icon grid */
       var iconGrid = document.querySelector('.mobile-icons');

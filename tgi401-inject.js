@@ -20,14 +20,36 @@
 
     if (isMobile) {
 
-      /* ---- DISABLE TOUCH-DRAG ---- */
+      /* ---- DISABLE TOUCH-DRAG + MAKE ICONS TAPPABLE ---- */
       document.querySelectorAll('.mobiledrag').forEach(function(el) {
+        // Kill drag behavior
         el.addEventListener('touchmove', function(e) {
           e.stopPropagation();
         }, { passive: true, capture: true });
         el.style.left = '';
         el.style.top = '';
         el.style.position = '';
+      });
+
+      /* Make entire icon cells tappable by finding the data-w-id trigger inside */
+      document.querySelectorAll('.mobile-icons .w-layout-cell').forEach(function(cell) {
+        cell.style.cursor = 'pointer';
+
+        // Find the trigger element (has data-w-id) or link inside
+        var trigger = cell.querySelector('[data-w-id]');
+        var link = cell.querySelector('a[href]');
+
+        cell.addEventListener('click', function(e) {
+          // If it's "Stalk Us" with an Instagram link, navigate there
+          if (link && link.href && link.href.indexOf('instagram') !== -1) {
+            window.open(link.href, '_blank');
+            return;
+          }
+          // Otherwise click the Webflow Interaction trigger
+          if (trigger) {
+            trigger.click();
+          }
+        });
       });
 
 
@@ -74,7 +96,7 @@
         logoWrap.id = 'tgi401-mobile-logo';
         logoWrap.style.cssText = [
           'text-align: center',
-          'padding: 8px 32px 0',
+          'padding: 4px 32px 0',
           'width: 100%'
         ].join(';');
 
@@ -82,8 +104,8 @@
         logoImg.src = 'https://401files.vercel.app/logo-chrome.webp';
         logoImg.alt = 'The Girls in 401';
         logoImg.style.cssText = [
-          'width: 65%',
-          'max-width: 260px',
+          'width: 60%',
+          'max-width: 240px',
           'height: auto',
           'filter: drop-shadow(0 4px 12px rgba(0,0,0,0.15))',
           'margin: 0 auto',
@@ -117,10 +139,7 @@
       /* Retro Mac/iOS style: rounded, Aqua gradient, bold text */
       var cta = document.createElement('div');
       cta.id = 'tgi401-shop-cta';
-      cta.innerHTML = '<button id="tgi401-shop-btn">' +
-        '<span style="font-size:18px;margin-right:6px;">&#x1F6CD;</span> ' +
-        'SHOP DROP 01' +
-        '</button>';
+      cta.innerHTML = '<button id="tgi401-shop-btn">SHOP DROP 01</button>';
 
       // Style the container
       cta.style.cssText = [
@@ -157,40 +176,40 @@
         // Retro depth
         'box-shadow: 0 2px 0 #1a5fa0, 0 4px 12px rgba(42, 125, 212, 0.35), inset 0 1px 0 rgba(255,255,255,0.4)',
         'text-shadow: 0 -1px 0 rgba(0,0,0,0.2)',
-        'transition: transform 0.1s ease, box-shadow 0.1s ease'
+        'animation: tgi401-cloud-float 3s ease-in-out infinite'
       ].join(';');
 
       document.body.appendChild(cta);
 
-      // Tap feedback
+      // Tap feedback — pause float, scale down
       btn.addEventListener('touchstart', function() {
-        btn.style.transform = 'scale(0.97)';
-        btn.style.boxShadow = '0 1px 0 #1a5fa0, 0 2px 6px rgba(42, 125, 212, 0.3), inset 0 1px 0 rgba(255,255,255,0.4)';
+        btn.style.animation = 'none';
+        btn.style.transform = 'scale(0.96)';
       }, { passive: true });
 
       btn.addEventListener('touchend', function() {
-        btn.style.transform = 'scale(1)';
-        btn.style.boxShadow = '0 2px 0 #1a5fa0, 0 4px 12px rgba(42, 125, 212, 0.35), inset 0 1px 0 rgba(255,255,255,0.4)';
+        btn.style.transform = '';
+        btn.style.animation = 'tgi401-cloud-float 3s ease-in-out infinite';
       }, { passive: true });
 
-      // Click handler: open the shop popup
+      // Click handler: open the shop popup via verified data-w-id
       btn.addEventListener('click', function(e) {
         e.preventDefault();
 
-        // Find "The Shop" icon and simulate a click to trigger Webflow Interaction
-        var shopIcons = document.querySelectorAll('.text-block-3');
-        var shopTrigger = null;
-        shopIcons.forEach(function(el) {
-          if (el.textContent.trim() === 'The Shop') {
-            // Walk up to find the data-w-id trigger element
-            shopTrigger = el.closest('[data-w-id]') || el.closest('.draggable3');
-          }
-        });
-
+        // Verified trigger: data-w-id="5c6a4337-7205-ef83-a10e-80ca2df9bf30" = "The Shop"
+        var shopTrigger = document.querySelector('[data-w-id="5c6a4337-7205-ef83-a10e-80ca2df9bf30"]');
         if (shopTrigger) {
           shopTrigger.click();
         } else {
-          // Fallback: navigate to product page directly
+          // Fallback: try any "The Shop" text
+          var labels = document.querySelectorAll('.text-block-3');
+          for (var i = 0; i < labels.length; i++) {
+            if (labels[i].textContent.trim() === 'The Shop') {
+              var t = labels[i].closest('[data-w-id]');
+              if (t) { t.click(); return; }
+            }
+          }
+          // Last resort: go to product page
           window.location.href = '/product/the-roomie-tee-pdf';
         }
       });

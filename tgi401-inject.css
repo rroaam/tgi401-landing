@@ -161,10 +161,10 @@
   /* Clean 2-column grid, no glassmorphism, solid retro cards */
   .mobile-icons {
     display: grid !important;
-    grid-template-columns: 1fr 1fr 1fr !important;
+    grid-template-columns: 1fr 1fr !important;
     gap: 4px !important;
     width: calc(100% - 24px) !important;
-    margin: 4px auto 0 !important;
+    margin: 0 auto !important;
     padding: 0 !important;
     position: relative !important;
     flex: 1 !important;
@@ -229,8 +229,8 @@
   /* Icon images — iOS home screen size */
   .mobile-icons .draggable3 > img,
   .mobile-icons .draggable3-copy > img {
-    width: 60px !important;
-    height: 60px !important;
+    width: 68px !important;
+    height: 68px !important;
     object-fit: contain !important;
     display: block !important;
     filter: drop-shadow(0 2px 6px rgba(0,0,0,0.15)) !important;
@@ -238,9 +238,9 @@
 
   /* Icon labels */
   .mobile-icons .text-block-3 {
-    font-size: 11px !important;
+    font-size: 13px !important;
     font-weight: 700 !important;
-    margin-top: 6px !important;
+    margin-top: 8px !important;
     text-align: center !important;
     color: #fff !important;
     letter-spacing: -0.02em !important;
@@ -248,6 +248,13 @@
     line-height: 1.2 !important;
   }
 
+
+
+  /* ---- CLOUD FLOAT ANIMATION for CTA ---- */
+  @keyframes tgi401-cloud-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+  }
 
   /* ---- CLOSE BUTTONS ---- */
   .x, .close, .close2, .close2-copy {

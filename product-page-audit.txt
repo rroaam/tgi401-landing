@@ -1,0 +1,157 @@
+TGI401 PRODUCT PAGE UX AUDIT — 2026-04-02
+==========================================
+
+URLS AUDITED:
+  LIVE Tee:  https://thegirlsin401.com/product/the-roomie-tee
+  LIVE Hat:  https://thegirlsin401.com/product/the-roomie-hat
+  HTML saved: roomie-tee.html, the401hat.html (in 401files/)
+
+NOTE: The URLs provided in the request (/product/the-roomie-tee-pdf and
+/product/the401hat) both return 404. Correct slugs are the-roomie-tee and
+the-roomie-hat.
+
+
+=== FINDING 1 — BROKEN INBOUND LINKS (SEVERITY: CRITICAL) ===
+Both originally-provided URLs return Webflow 404 pages:
+  - /product/the-roomie-tee-pdf  -> 404
+  - /product/the401hat           -> 404
+If these links are in marketing emails, social bios, or printed materials,
+every click is a lost sale.
+FIX: Set up 301 redirects in Webflow for the old slugs, or correct all
+external links to use /product/the-roomie-tee and /product/the-roomie-hat.
+
+
+=== FINDING 2 — "SHIZE" LABEL + GARBLED SIZE OPTIONS (SEVERITY: CRITICAL) ===
+Affects: Roomie Tee ONLY
+The SKU property label reads "Shize" instead of "Size".
+The dropdown placeholder reads "Select Shize".
+Option values are "Shmall", "shMedium", "shLarge" instead of S, M, L.
+
+Selectors:
+  label.field-label-5           -> text content "Shize"
+  select.select-field-3         -> placeholder "Select Shize"
+  option values inside #option-set-65f67e0f0257878e26c0954cc80ea632
+
+This is a Webflow CMS / Commerce SKU property issue. The property name and
+enum slugs need to be corrected in Webflow E-commerce > Product SKU settings.
+
+NOTE: The tee page also has a HIDDEN size-button block (class "size" with
+"w-condition-invisible") showing XS/S/M/L buttons — this is the correct UI
+but it is conditionally hidden. The dropdown with garbled names is what
+customers actually see.
+
+
+=== FINDING 3 — NO NATIVE "ADD TO CART" BUTTON (SEVERITY: HIGH) ===
+Affects: BOTH pages
+Neither product page has a visible Webflow "Add to Cart" button. The entire
+Webflow Commerce add-to-cart form exists in the DOM but the only visible
+purchase action is an <a> tag styled as a button linking to an external
+Stripe Payment Link.
+
+Selectors:
+  a.button.w-button  (text: "Buy Now", links to buy.stripe.com)
+  form.w-commerce-commerceaddtocartform.default-state-3  (present but has
+    no visible submit/add-to-cart input)
+
+This means the Webflow cart system (which IS loaded, including PayPal SDK
+and Apple Pay) is completely unused. Customers cannot add multiple products
+to a single cart or combine tee + hat in one order.
+
+FIX: Either add a Webflow "Add to Cart" button inside the commerce form,
+OR commit fully to Stripe Payment Links and remove the dead cart UI.
+
+
+=== FINDING 4 — STRIPE PAYMENT LINKS STATUS (SEVERITY: OK) ===
+Both Stripe links return HTTP 200 (live and functional):
+  Tee: https://buy.stripe.com/bJebJ13uTd9u1aO9d2b7y01  -> 200
+  Hat: https://buy.stripe.com/9B65kD3uT0mI2eS88Yb7y02  -> 200
+
+Stripe account: acct_1RyPDWEDSoYYUgg7 (confirmed in page source).
+PayPal also loaded (merchant N3VQ6JK2JDZ86) but no visible PayPal button.
+
+
+=== FINDING 5 — CUSTOM CURSOR HIDES DEFAULT CURSOR (SEVERITY: HIGH) ===
+Affects: BOTH pages + entire site
+Global CSS rule:  *, *::before, *::after { cursor: none !important; }
+This disables the system cursor sitewide and replaces it with a custom
+image-based cursor (.cursor-wrapper). On mobile, tablets, and any device
+where JS fails to load or where the custom cursor animation breaks,
+users have NO visible cursor at all.
+
+Selector: embedded <style> in <head>
+FIX: Remove "cursor: none !important" or scope it to desktop-only via
+@media (hover: hover) and (pointer: fine).
+
+
+=== FINDING 6 — MOBILE COMPLETELY BLOCKED (SEVERITY: CRITICAL) ===
+Affects: Entire site including product pages
+A full-viewport overlay with class "horizontal-mobile-block" displays the
+message "Please Rotate Device to View Website" on mobile. This element
+appears to block ALL mobile portrait traffic with no way to dismiss.
+
+Selector: div.horizontal-mobile-block
+Child: div.text-block-8
+
+There is no responsive product layout at all — the site forces landscape
+or desktop only. This blocks the majority of e-commerce traffic (60%+
+of web traffic is mobile).
+
+
+=== FINDING 7 — PRODUCT IMAGES (SEVERITY: OK) ===
+Affects: BOTH pages
+Gallery images load correctly. Each page has a Webflow slider (.slider-3
+.w-slider) with 6 slides using background-image URLs from Webflow CDN.
+Images are hosted at cdn.prod.website-files.com and resolve properly.
+
+Tee: 6 slides (product shots, model shots)
+Hat: 6 slides (product shots, styled shots)
+Auto-play enabled (3s interval), arrows + dot nav present.
+
+
+=== FINDING 8 — PRICING DISPLAY (SEVERITY: OK) ===
+Tee: "$45.00 USD" displayed via div.price
+Hat: "$55.00 USD" displayed via div.price
+Both are clearly visible and data-bound to Webflow Commerce SKU pricing.
+
+
+=== FINDING 9 — PRODUCT DESCRIPTION (SEVERITY: LOW) ===
+Tee description is readable but informal/quirky (intentional brand voice).
+Additional details in rich-text-block-2: "-Elwood crop", sizing reference
+("Hailee wears XS, Abbey wears a medium"), print quality note.
+Hat description is readable. Additional details: "One size", "Trucker hat
+style".
+
+
+=== FINDING 10 — NAVIGATION / BACK TO HOME (SEVERITY: MEDIUM) ===
+Both pages have a "Return to Home" link (a.link-block-3) pointing to /home.
+The navbar logo also links to "/". The logo in the URL bar area links to "/".
+However, there is no breadcrumb, no "Shop" link, and no way to navigate
+between the two products without going back to the homepage first.
+
+FIX: Add product-to-product navigation or a "Shop All" link.
+
+
+=== FINDING 11 — PAGE TITLE / SEO (SEVERITY: MEDIUM) ===
+Both product pages have <title>thegirlsin401</title> — no product name in
+the title tag. Meta description is also missing for both product pages.
+FIX: Set per-product page titles ("The Roomie Tee | thegirlsin401") and
+meta descriptions in Webflow CMS.
+
+
+=== FINDING 12 — MISSING ALT TEXT ON IMAGES (SEVERITY: LOW) ===
+Most images across both pages have empty alt="" attributes, including the
+navbar icons, cursor images, and right-side icon buttons. The slider
+arrow images have empty alt="" as well.
+
+
+PRIORITY FIX ORDER:
+1. CRITICAL: Fix mobile block (div.horizontal-mobile-block) — remove or
+   replace with responsive layout
+2. CRITICAL: Fix broken URL slugs (set up 301 redirects)
+3. CRITICAL: Fix "Shize" -> "Size" and option names in Webflow Commerce
+4. HIGH: Add actual Add to Cart button or remove dead Webflow cart code
+5. HIGH: Fix cursor:none for mobile/fallback
+6. MEDIUM: Add product names to page titles
+7. MEDIUM: Add cross-product navigation
+8. LOW: Add alt text to images
+9. LOW: Add meta descriptions

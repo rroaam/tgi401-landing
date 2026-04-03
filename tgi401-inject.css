@@ -1,0 +1,440 @@
+/* ============================================
+   TGI401 — Custom Code Injection
+   Fixes: Mobile layout, typography, contrast,
+   hover states, focus, animations, marquee
+   ============================================ */
+
+/* --- FIX: CURSOR — Scope custom cursor to desktop only --- */
+@media (hover: hover) and (pointer: fine) {
+  *, *::before, *::after {
+    cursor: none !important;
+  }
+}
+@media not all and (hover: hover) and (pointer: fine) {
+  *, *::before, *::after {
+    cursor: auto !important;
+  }
+  .cursor-wrapper { display: none !important; }
+}
+
+/* --- FIX #1: MOBILE RESPONSIVE LAYOUT --- */
+/* Replace "Please Rotate Device" with actual mobile experience */
+@media screen and (max-width: 767px) {
+  /* Hide the rotate message */
+  .horizontal-mobile-block {
+    display: none !important;
+  }
+
+  /* Show the main section on mobile */
+  .section {
+    display: block !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    height: auto !important;
+    min-height: 100dvh !important;
+  }
+
+  /* Hide desktop-only elements */
+  .cursor-wrapper,
+  .cursor,
+  .bg-desktop {
+    display: none !important;
+  }
+
+  /* Show mobile background */
+  .bg-mobile {
+    display: block !important;
+  }
+
+  /* Hide the desktop draggable icon grid, show mobile layout */
+  .background {
+    position: relative !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+    padding: 16px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+
+  /* Convert floating popup windows into stacked cards */
+  .aboutwindow,
+  .formwindow,
+  .shopwindow,
+  .shoppop,
+  .videowindow,
+  .brandvaluespop,
+  .bagpopup {
+    position: relative !important;
+    width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    transform: none !important;
+    display: block !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    margin-bottom: 12px !important;
+  }
+
+  /* Make the draggable wrappers stack vertically */
+  .draggable-wrap,
+  .draggable3,
+  .draggable3-copy,
+  .draggable4,
+  .draggable5,
+  .draggable6,
+  .draggable8 {
+    position: relative !important;
+    width: 100% !important;
+    height: auto !important;
+    top: auto !important;
+    left: auto !important;
+    transform: none !important;
+    cursor: default !important;
+  }
+
+  /* Mobile nav */
+  .nav-bar {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 100 !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+  }
+
+  /* Make popup inner content fill properly */
+  .apppop,
+  .shoppop {
+    transform: scale3d(1, 1, 1) !important;
+    opacity: 1 !important;
+  }
+
+  /* Stack the quick-stack / mobile-icons grid */
+  .quick-stack,
+  .mobile-icons,
+  .tablet-icons {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 12px !important;
+    padding: 8px !important;
+    width: 100% !important;
+  }
+
+  .quick-stack .w-layout-cell,
+  .mobile-icons .w-layout-cell,
+  .tablet-icons .w-layout-cell {
+    width: 100% !important;
+    min-height: 80px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 16px !important;
+    background: rgba(255, 255, 255, 0.85) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(0, 0, 0, 0.06) !important;
+    padding: 16px !important;
+    cursor: pointer !important;
+    -webkit-tap-highlight-color: transparent !important;
+    transition: transform 0.15s ease, box-shadow 0.15s ease !important;
+  }
+
+  .quick-stack .w-layout-cell:active,
+  .mobile-icons .w-layout-cell:active,
+  .tablet-icons .w-layout-cell:active {
+    transform: scale(0.97) !important;
+  }
+
+  /* OS window chrome — make it responsive */
+  .nav {
+    width: 100% !important;
+  }
+
+  .div-block-6 {
+    width: 100% !important;
+  }
+
+  /* Remove custom cursor on mobile */
+  *, *::before, *::after {
+    cursor: auto !important;
+  }
+
+  /* Fix the shop popup to be full-width */
+  .shoppop .collection-list {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+    width: 100% !important;
+  }
+}
+
+/* Tablet breakpoint */
+@media screen and (min-width: 768px) and (max-width: 991px) {
+  .horizontal-mobile-block {
+    display: none !important;
+  }
+
+  .section {
+    display: block !important;
+  }
+
+  .cursor-wrapper {
+    display: none !important;
+  }
+
+  *, *::before, *::after {
+    cursor: auto !important;
+  }
+}
+
+
+/* --- FIX #2: BIGGER PRODUCT CARDS --- */
+.shoppop .w-dyn-item,
+.hatpop .w-dyn-item {
+  width: 100% !important;
+  max-width: 400px !important;
+  margin: 0 auto !important;
+}
+
+.shoppop .w-dyn-item img,
+.hatpop .w-dyn-item img {
+  width: 100% !important;
+  aspect-ratio: 1 !important;
+  object-fit: cover !important;
+  border-radius: 12px !important;
+}
+
+@media screen and (max-width: 767px) {
+  .shoppop .w-dyn-item,
+  .hatpop .w-dyn-item {
+    max-width: 100% !important;
+  }
+}
+
+
+/* --- FIX #5: DESKTOP ICON HOVER STATES --- */
+@media (hover: hover) {
+  .draggable3,
+  .draggable3-copy,
+  .draggable4,
+  .draggable5,
+  .draggable6,
+  .draggable8,
+  ._1, ._2, ._3, ._4,
+  ._1-copy, ._2-copy, ._3-copy, ._4-copy,
+  ._2-copy-copy, ._4-copy-copy,
+  ._5-copy, ._5-copy-copy {
+    cursor: pointer !important;
+    transition: transform 0.2s ease !important;
+  }
+
+  .draggable3:hover,
+  .draggable3-copy:hover,
+  .draggable4:hover,
+  .draggable5:hover,
+  .draggable6:hover,
+  .draggable8:hover,
+  ._1:hover, ._2:hover, ._3:hover, ._4:hover,
+  ._1-copy:hover, ._2-copy:hover, ._3-copy:hover, ._4-copy:hover,
+  ._2-copy-copy:hover, ._4-copy-copy:hover,
+  ._5-copy:hover, ._5-copy-copy:hover {
+    transform: scale(1.05) !important;
+  }
+}
+
+
+/* --- FIX #6: SMOOTHER WINDOW OPEN/CLOSE --- */
+.shoppop,
+.apppop,
+.aboutwindow .capdesktop > div,
+.videowindow,
+.brandvaluespop,
+.formwindow .apppop,
+.bagpopup {
+  transition: transform 0.3s cubic-bezier(0.25, 0.1, 0.25, 1),
+              opacity 0.3s cubic-bezier(0.25, 0.1, 0.25, 1) !important;
+  will-change: transform, opacity !important;
+}
+
+
+/* --- FIX: Z-INDEX STACKING STRATEGY --- */
+.shoppop,
+.apppop,
+.brandvaluespop,
+.videowindow,
+.bagpopup,
+.formwindow .apppop {
+  z-index: 1 !important;
+}
+/* Focused/last-clicked window gets highest z */
+.shoppop.tgi-focus,
+.apppop.tgi-focus,
+.brandvaluespop.tgi-focus,
+.videowindow.tgi-focus,
+.bagpopup.tgi-focus,
+.formwindow .apppop.tgi-focus {
+  z-index: 10 !important;
+}
+/* Cart modal always on top */
+.w-commerce-commercecartcontainerwrapper {
+  z-index: 9999 !important;
+}
+
+/* --- FIX: PREFERS-REDUCED-MOTION --- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    cursor: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .cursor-wrapper { display: none !important; }
+}
+
+/* --- FIX: SMOOTHER POPUP OPEN — visibility + opacity instead of display --- */
+/* Override display:none toggling with opacity/transform approach */
+.shoppop[style*="display: none"],
+.apppop[style*="display: none"],
+.brandvaluespop[style*="display: none"],
+.videowindow[style*="display: none"],
+.bagpopup[style*="display: none"] {
+  display: block !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* --- FIX #7: CONTINUOUS MARQUEE WITHOUT GAPS --- */
+.text-block-38 {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+}
+
+/* If there's a scrolling ticker, ensure seamless loop */
+@keyframes tgi401-ticker {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.marquee-track,
+.ticker-track {
+  display: inline-flex !important;
+  animation: tgi401-ticker 20s linear infinite !important;
+  white-space: nowrap !important;
+}
+
+
+/* --- FIX #8: TYPOGRAPHY — Helvetica Neue LT Pro --- */
+@font-face {
+  font-family: 'HelveticaNeueLTPro';
+  src: local('Helvetica Neue LT Pro'),
+       local('HelveticaNeueLTPro-Bd'),
+       local('HelveticaNeue-Bold'),
+       local('Helvetica Neue Bold');
+  font-weight: 700;
+  font-display: swap;
+}
+
+/* Override headings and display text */
+h1, h2, h3, h4, h5, h6,
+.heading,
+.text-block-3,
+.text-block-4,
+.text-block-5,
+.text-block-6,
+.text-block-7,
+.text-block-8,
+.text-block-28,
+.text-block-31,
+.text-block-32,
+.div-block-12 .text-block-6,
+.nav-bar,
+.shop-btn,
+.field-label {
+  font-family: 'HelveticaNeueLTPro', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.05em !important;
+}
+
+/* NEVER use Space Grotesk — override if Webflow loaded it */
+[style*="Space Grotesk"],
+.w-body [style*="Space Grotesk"] {
+  font-family: 'HelveticaNeueLTPro', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif !important;
+}
+
+
+/* --- FIX #9: FOCUS-VISIBLE OUTLINES --- */
+*:focus-visible {
+  outline: 2px solid #e8457a !important;
+  outline-offset: 2px !important;
+}
+
+a:focus-visible,
+button:focus-visible,
+.w-inline-block:focus-visible,
+.draggable3:focus-visible,
+.w-dropdown-toggle:focus-visible {
+  outline: 2px solid #e8457a !important;
+  outline-offset: 2px !important;
+  border-radius: 4px !important;
+}
+
+input:focus-visible,
+textarea:focus-visible,
+.text-field:focus-visible {
+  outline: none !important;
+  border-color: #e8457a !important;
+  box-shadow: 0 0 0 3px rgba(232, 69, 122, 0.15) !important;
+}
+
+/* Skip link for keyboard users */
+.tgi401-skip-link {
+  position: absolute;
+  top: -100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 8px 16px;
+  background: #1a1a2e;
+  color: #fff;
+  font-family: 'HelveticaNeueLTPro', 'Helvetica Neue', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: -0.05em;
+  border-radius: 6px;
+  z-index: 10000;
+  text-decoration: none;
+}
+
+.tgi401-skip-link:focus {
+  top: 8px;
+}
+
+
+/* --- FIX #10: COLOR CONTRAST --- */
+/* Chrome-on-sky text: darken for WCAG AA (4.5:1 minimum) */
+.text-block-38,
+.text-block-34 {
+  color: #2d5a82 !important;
+}
+
+/* Product tags — ensure pink on light bg has sufficient contrast */
+.product-tag,
+.hatprice {
+  color: #c43567 !important;
+}
+
+/* Field labels */
+.field-label {
+  color: #1a1a2e !important;
+}
+
+/* Subtle text — ensure at least 4.5:1 on white/light backgrounds */
+.text-block-7,
+.div-block-9 {
+  color: #3d5a75 !important;
+}

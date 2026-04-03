@@ -31,11 +31,29 @@
         el.style.position = '';
       });
 
+      /* ---- KILL ALL WEBFLOW POPUPS (prevent leaking behind modal) ---- */
+      function killAllPopups() {
+        document.querySelectorAll('.shoppop, .apppop, .bagpopup, .brandvaluespop, .videowindow, .roomiespop, .roomiespop-copy, .roomiespop-copy-copy, .formwindow').forEach(function(el) {
+          el.style.display = 'none';
+          el.style.opacity = '0';
+          el.style.pointerEvents = 'none';
+          el.style.visibility = 'hidden';
+        });
+      }
+      // Kill on load to prevent any auto-triggered popups
+      killAllPopups();
+
+      /* ---- STRIP WEBFLOW INTERACTION TRIGGERS on mobile ---- */
+      // Remove data-w-id from ALL elements inside mobile-icons
+      // so Webflow IX2 engine cannot fire interactions on tap
+      document.querySelectorAll('.mobile-icons [data-w-id]').forEach(function(el) {
+        el.removeAttribute('data-w-id');
+      });
+
       /* Make entire icon cells tappable — route product icons to modal */
       document.querySelectorAll('.mobile-icons .w-layout-cell').forEach(function(cell) {
         cell.style.cursor = 'pointer';
 
-        var trigger = cell.querySelector('[data-w-id]');
         var link = cell.querySelector('a[href]');
         var label = cell.querySelector('.text-block-3');
         var labelText = label ? label.textContent.trim().toLowerCase() : '';
@@ -46,21 +64,18 @@
 
           // Product icons → open product modal
           if (labelText.indexOf('shop') !== -1 || labelText.indexOf('store') !== -1) {
-            // "The Shop" icon → show tee by default (first product)
             openProductModal('tee');
             return;
           }
 
           // Instagram link
-          if (link && link.href && link.href.indexOf('instagram') !== -1) {
-            window.open(link.href, '_blank');
+          if (labelText.indexOf('stalk') !== -1 || (link && link.href && link.href.indexOf('instagram') !== -1)) {
+            var igUrl = link ? link.href : 'https://instagram.com/haileebobailee';
+            window.open(igUrl, '_blank');
             return;
           }
 
-          // Otherwise click the Webflow Interaction trigger
-          if (trigger) {
-            trigger.click();
-          }
+          // All other icons — do nothing (no Webflow popups)
         });
       });
 
@@ -206,10 +221,11 @@
         document.body.style.overflow = 'hidden';
       }
 
-      // Close modal
+      // Close modal — also kill any Webflow popups that leaked behind it
       modal.querySelector('.modal-close').addEventListener('click', function() {
         modal.classList.remove('active');
         document.body.style.overflow = '';
+        killAllPopups();
       });
 
       // Buy button → Stripe

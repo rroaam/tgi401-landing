@@ -164,7 +164,8 @@
   .shopwindow,
   .tablet-icons,
   .shoppop,
-  .formwindow {
+  .formwindow,
+  .apppop {
     display: none !important;
   }
 

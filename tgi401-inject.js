@@ -132,6 +132,14 @@
           name: 'The Roomie Tee',
           price: '$45',
           image: 'https://401files.vercel.app/shirt-gradient-sm.png',
+          images: [
+            'https://cdn.prod.website-files.com/6786a4881b3467a4db38a16b/682cb10c408becd77f7c409a_unnamed%20(1).jpg',
+            'https://cdn.prod.website-files.com/6786a4881b3467a4db38a16b/67fe86f71dad8e561cf1375e_shirt2.jpg',
+            'https://cdn.prod.website-files.com/6786a4881b3467a4db38a16b/68066ccaaebd5d2712d4b521_TGI%204012689.jpg',
+            'https://cdn.prod.website-files.com/6786a4881b3467a4db38a16b/68066c6a233fff475b6cff9e_unnamed%20(1).jpg',
+            'https://cdn.prod.website-files.com/6786a4881b3467a4db38a16b/67fe86faa5b7fa2786fb947b_shirt4.jpg',
+            'https://cdn.prod.website-files.com/6786a4881b3467a4db38a16b/67fe86fd3bb2b1a0d67e8123_TGI%204012680%20(1).jpg'
+          ],
           sizes: ['XS', 'S/M', 'L/XL'],
           stripeUrl: 'https://buy.stripe.com/bJebJ13uTd9u1aO9d2b7y01'
         },
@@ -139,7 +147,13 @@
           name: 'The Roomie Hat',
           price: '$55',
           image: 'https://401files.vercel.app/hat-gradient-sm.png',
-          sizes: null, // one size
+          images: [
+            'https://cdn.prod.website-files.com/6786a4881b3467a4db38a16b/682cb12500541e66289b5629_unnamed%20(2).jpg',
+            'https://cdn.prod.website-files.com/6786a4881b3467a4db38a16b/68066b4ab648fd19d893ca0b_unnamed.jpg',
+            'https://cdn.prod.website-files.com/6786a4881b3467a4db38a16b/68066c41b7c5561cfff961e1_TGI%204012719-Recovered%20copy-min.jpg',
+            'https://cdn.prod.website-files.com/6786a4881b3467a4db38a16b/68066c59e7f3067582a1b5e8_TGI%204012701%20copy-min.jpg'
+          ],
+          sizes: null,
           stripeUrl: 'https://buy.stripe.com/9B65kD3uT0mI2eS88Yb7y02'
         }
       };
@@ -150,7 +164,10 @@
       modal.id = 'tgi401-product-modal';
       modal.innerHTML = [
         '<button class="modal-close" aria-label="Close">&times;</button>',
-        '<img class="modal-image" src="" alt="">',
+        '<div class="modal-carousel">',
+        '  <div class="modal-slides"></div>',
+        '  <div class="modal-dots"></div>',
+        '</div>',
         '<div class="modal-body">',
         '  <div class="modal-name"></div>',
         '  <div class="modal-price"></div>',
@@ -161,7 +178,8 @@
       ].join('');
       document.body.appendChild(modal);
 
-      var modalImg = modal.querySelector('.modal-image');
+      var modalSlides = modal.querySelector('.modal-slides');
+      var modalDots = modal.querySelector('.modal-dots');
       var modalName = modal.querySelector('.modal-name');
       var modalPrice = modal.querySelector('.modal-price');
       var modalSizes = modal.querySelector('.modal-sizes');
@@ -170,6 +188,7 @@
       var currentProduct = null;
       var currentProductKey = null;
       var selectedSize = null;
+      var currentSlide = 0;
 
       function openProductModal(productKey) {
         var p = products[productKey];
@@ -177,9 +196,39 @@
         currentProduct = p;
         currentProductKey = productKey;
         selectedSize = null;
+        currentSlide = 0;
 
-        modalImg.src = p.image;
-        modalImg.alt = p.name;
+        // Build image carousel
+        var imgs = p.images || [p.image];
+        modalSlides.innerHTML = '';
+        modalDots.innerHTML = '';
+        imgs.forEach(function(src, i) {
+          var img = document.createElement('img');
+          img.className = 'modal-slide' + (i === 0 ? ' active' : '');
+          img.src = src;
+          img.alt = p.name + ' — photo ' + (i + 1);
+          img.draggable = false;
+          modalSlides.appendChild(img);
+
+          var dot = document.createElement('div');
+          dot.className = 'modal-dot' + (i === 0 ? ' active' : '');
+          dot.addEventListener('click', function() { goToSlide(i); });
+          modalDots.appendChild(dot);
+        });
+
+        // Swipe support
+        var startX = 0;
+        var diffX = 0;
+        modalSlides.ontouchstart = function(e) { startX = e.touches[0].clientX; };
+        modalSlides.ontouchmove = function(e) { diffX = e.touches[0].clientX - startX; };
+        modalSlides.ontouchend = function() {
+          if (Math.abs(diffX) > 40) {
+            if (diffX < 0 && currentSlide < imgs.length - 1) goToSlide(currentSlide + 1);
+            else if (diffX > 0 && currentSlide > 0) goToSlide(currentSlide - 1);
+          }
+          diffX = 0;
+        };
+
         modalName.textContent = p.name;
         modalPrice.textContent = p.price;
 
@@ -227,6 +276,20 @@
         document.body.style.overflow = '';
         killAllPopups();
       });
+
+      // Carousel slide navigation
+      function goToSlide(index) {
+        currentSlide = index;
+        var slides = modalSlides.querySelectorAll('.modal-slide');
+        var dots = modalDots.querySelectorAll('.modal-dot');
+        slides.forEach(function(s, i) {
+          s.classList.toggle('active', i === index);
+        });
+        dots.forEach(function(d, i) {
+          d.classList.toggle('active', i === index);
+        });
+        modalSlides.style.transform = 'translateX(-' + (index * 100) + '%)';
+      }
 
       // Buy button → Stripe
       modalBuy.addEventListener('click', function() {

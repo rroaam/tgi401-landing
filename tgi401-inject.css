@@ -335,6 +335,50 @@
     display: flex;
   }
 
+  /* Carousel */
+  #tgi401-product-modal .modal-carousel {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    background: #f5f5f5;
+  }
+
+  #tgi401-product-modal .modal-slides {
+    display: flex;
+    transition: transform 0.3s ease;
+    will-change: transform;
+  }
+
+  #tgi401-product-modal .modal-slide {
+    flex: 0 0 100%;
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+  }
+
+  #tgi401-product-modal .modal-dots {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 6px;
+    z-index: 2;
+  }
+
+  #tgi401-product-modal .modal-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.25);
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  #tgi401-product-modal .modal-dot.active {
+    background: #1a1a2e;
+  }
+
   #tgi401-product-modal .modal-close {
     position: absolute;
     top: 12px;
@@ -353,12 +397,7 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  #tgi401-product-modal .modal-image {
-    width: 100%;
-    aspect-ratio: 1;
-    object-fit: cover;
-    background: #f5f5f5;
-  }
+  /* (modal-image removed — replaced by carousel) */
 
   #tgi401-product-modal .modal-body {
     padding: 20px 20px 32px;

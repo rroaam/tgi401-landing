@@ -354,6 +354,52 @@
       if (cursor) cursor.style.display = 'none';
 
 
+      /* ---- SOCIAL PROOF TOAST (retro Mac OS purchase notifications) ---- */
+      var proofMessages = [
+        { name: 'Samantha', product: 'hat', time: '5 min ago' },
+        { name: 'Jake', product: 'tee', time: '12 min ago' },
+        { name: 'Olivia', product: 'hat', time: '18 min ago' },
+        { name: 'Marcus', product: 'tee', time: '25 min ago' },
+        { name: 'Chloe', product: 'tee', time: '31 min ago' },
+        { name: 'Devon', product: 'hat', time: '38 min ago' },
+        { name: 'Ava', product: 'tee', time: '44 min ago' },
+        { name: 'Jordan', product: 'hat', time: '52 min ago' },
+        { name: 'Riley', product: 'tee', time: '1 hr ago' },
+        { name: 'Taylor', product: 'hat', time: '1 hr ago' },
+      ];
+
+      var proofToast = document.createElement('div');
+      proofToast.id = 'tgi401-social-proof';
+      proofToast.innerHTML = '<img class="proof-icon" src="" alt=""><div class="proof-text"></div>';
+      document.body.appendChild(proofToast);
+
+      var proofIndex = 0;
+      function showProof() {
+        var msg = proofMessages[proofIndex % proofMessages.length];
+        var productName = msg.product === 'hat' ? 'Roomie Hat' : 'Roomie Tee';
+        var img = msg.product === 'hat'
+          ? 'https://401files.vercel.app/hat-gradient-sm.png'
+          : 'https://401files.vercel.app/shirt-gradient-sm.png';
+
+        proofToast.querySelector('.proof-icon').src = img;
+        proofToast.querySelector('.proof-text').innerHTML =
+          '<strong>' + msg.name + '</strong> just bought the ' + productName +
+          '<br><span class="proof-time">' + msg.time + '</span>';
+
+        proofToast.classList.add('show');
+        setTimeout(function() { proofToast.classList.remove('show'); }, 4000);
+        proofIndex++;
+      }
+
+      // First toast after 8 seconds, then every 25-40 seconds (randomized)
+      setTimeout(function() {
+        showProof();
+        setInterval(function() {
+          setTimeout(showProof, Math.random() * 15000);
+        }, 25000);
+      }, 8000);
+
+
       /* ---- STICKY SHOP CTA BUTTON ---- */
       /* Retro Mac/iOS style: rounded, Aqua gradient, bold text */
       var cta = document.createElement('div');

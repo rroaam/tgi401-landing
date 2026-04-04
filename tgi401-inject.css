@@ -518,6 +518,61 @@
     color: #1a1a2e;
   }
 
+  /* ---- SOCIAL PROOF TOAST (retro Mac OS alert) ---- */
+  #tgi401-social-proof {
+    position: fixed;
+    bottom: 80px;
+    left: 12px;
+    right: 12px;
+    z-index: 998;
+    background: linear-gradient(180deg, #f8f8f8 0%, #e8e8e8 100%);
+    border: 1px solid #b5b5b5;
+    border-radius: 10px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.8);
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transform: translateY(120%);
+    opacity: 0;
+    transition: transform 0.35s cubic-bezier(0.25, 0.1, 0.25, 1), opacity 0.35s ease;
+    pointer-events: none;
+  }
+
+  #tgi401-social-proof.show {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  #tgi401-social-proof .proof-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    object-fit: contain;
+    background: #fff;
+    flex-shrink: 0;
+  }
+
+  #tgi401-social-proof .proof-text {
+    flex: 1;
+    font-family: 'HelveticaNeueLTPro', 'Helvetica Neue', 'Helvetica', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: #333;
+    line-height: 1.3;
+  }
+
+  #tgi401-social-proof .proof-text strong {
+    font-weight: 800;
+  }
+
+  #tgi401-social-proof .proof-time {
+    font-size: 10px;
+    color: #888;
+    font-weight: 400;
+  }
+
   /* ---- CLOSE BUTTONS ---- */
   .x, .close, .close2, .close2-copy {
     min-width: 44px !important;

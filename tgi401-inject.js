@@ -311,24 +311,34 @@
       // and route them to the product modal instead of Webflow popups
 
 
-      /* ---- PRODUCT + ICON GRID: hide all, then inject exactly what we want ---- */
-      // Step 1: Hide ALL Webflow cells — nuke everything
-      document.querySelectorAll('.mobile-icons .w-layout-cell').forEach(function(cell) {
-        cell.style.display = 'none';
+      /* ---- PRODUCT + ICON GRID: nuke everything, then inject what we want ---- */
+      // Step 1: Hide ALL children inside mobile-icons — every cell, every element
+      var iconGrid = document.querySelector('.mobile-icons');
+      if (iconGrid) {
+        Array.from(iconGrid.children).forEach(function(child) {
+          child.style.display = 'none';
+        });
+      }
+
+      // Step 2: Also nuke any CMS/commerce product items anywhere on page (mobile)
+      document.querySelectorAll('.w-dyn-item, .w-commerce-commerceaddtocartform, .hatpop, .shoppop').forEach(function(el) {
+        el.style.display = 'none';
       });
 
-      // Step 2: Selectively un-hide the 3 we want (by label text)
+      // Step 3: Un-hide ONLY the 3 icon cells we want (by label text)
       var keepLabels = ['the roomies', 'don\'t click me', 'stalk us'];
       document.querySelectorAll('.mobile-icons .w-layout-cell').forEach(function(cell) {
-        var label = cell.querySelector('.text-block-3');
-        var labelText = label ? label.textContent.trim().toLowerCase() : '';
-        if (keepLabels.indexOf(labelText) !== -1) {
-          cell.style.display = '';
+        // Check all text nodes inside, not just text-block-3
+        var allText = cell.textContent.trim().toLowerCase();
+        for (var i = 0; i < keepLabels.length; i++) {
+          if (allText.indexOf(keepLabels[i]) !== -1) {
+            cell.style.display = '';
+            break;
+          }
         }
       });
 
-      // Step 3: Inject exactly ONE tee + ONE hat as product icons at top
-      var iconGrid = document.querySelector('.mobile-icons');
+      // Step 4: Inject exactly ONE tee + ONE hat as product icons at top
       if (iconGrid) {
         var teeIcon = document.createElement('div');
         teeIcon.className = 'tgi-product-icon';

@@ -89,7 +89,7 @@
     z-index: 500;
     text-align: center;
     padding: 8px 16px 6px;
-    background: linear-gradient(180deg, rgba(200,221,242,0.95) 0%, rgba(200,221,242,0.8) 70%, rgba(200,221,242,0) 100%);
+    background: none;
     pointer-events: none;
   }
 

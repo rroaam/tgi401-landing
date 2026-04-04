@@ -253,21 +253,50 @@
     filter: drop-shadow(0 2px 6px rgba(0,0,0,0.15)) !important;
   }
 
-  /* Hero icon — The Shop gets the biggest treatment */
-  .mobile-icons .w-layout-cell.tgi-hero-icon {
-    grid-column: 1 / -1 !important;
-    padding: 12px 4px 8px !important;
+  /* ---- INJECTED PRODUCT ICONS (macOS app icon style) ---- */
+  .tgi-product-icon {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 6px 2px 2px !important;
+    cursor: pointer !important;
+    -webkit-tap-highlight-color: transparent !important;
+    transition: transform 0.15s ease !important;
   }
-  .mobile-icons .tgi-hero-icon .draggable3 img,
-  .mobile-icons .tgi-hero-icon .draggable3-copy img {
-    width: 100px !important;
-    height: 100px !important;
-    min-width: 100px !important;
-    min-height: 100px !important;
+
+  .tgi-product-icon:active {
+    transform: scale(0.90) !important;
   }
-  .mobile-icons .tgi-hero-icon .text-block-3 {
-    font-size: 15px !important;
-    margin-top: 6px !important;
+
+  .tgi-product-icon img {
+    width: 72px !important;
+    height: 72px !important;
+    object-fit: contain !important;
+    border-radius: 16px !important;
+    filter: drop-shadow(0 3px 8px rgba(0,0,0,0.25)) !important;
+    background: rgba(255,255,255,0.12) !important;
+  }
+
+  .tgi-product-icon .tgi-product-label {
+    font-family: 'HelveticaNeueLTPro', 'Helvetica Neue', 'Helvetica', sans-serif !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    margin-top: 4px !important;
+    text-align: center !important;
+    color: #fff !important;
+    letter-spacing: -0.02em !important;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.6) !important;
+    line-height: 1.15 !important;
+  }
+
+  .tgi-product-icon .tgi-product-price {
+    font-family: 'HelveticaNeueLTPro', 'Helvetica Neue', 'Helvetica', sans-serif !important;
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    color: rgba(255,255,255,0.7) !important;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.6) !important;
+    margin-top: 1px !important;
   }
 
   /* Icon labels */

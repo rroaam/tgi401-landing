@@ -248,8 +248,32 @@
       // and route them to the product modal instead of Webflow popups
 
 
-      /* ---- HIDE SPECIFIC ICONS + MARK HERO + MARK EMPTY CELLS ---- */
-      var hideLabels = ['roommate', 'ex boyfriends'];
+      /* ---- INJECT PRODUCT ICONS (hat + shirt as app-style icons) ---- */
+      var iconGrid = document.querySelector('.mobile-icons');
+      if (iconGrid) {
+        // Create tee icon
+        var teeIcon = document.createElement('div');
+        teeIcon.className = 'tgi-product-icon';
+        teeIcon.innerHTML = '<img src="https://401files.vercel.app/shirt-gradient-sm.png" alt="The Roomie Tee">'
+          + '<div class="tgi-product-label">Roomie Tee</div>'
+          + '<div class="tgi-product-price">$45</div>';
+        teeIcon.addEventListener('click', function() { openProductModal('tee'); });
+
+        // Create hat icon
+        var hatIcon = document.createElement('div');
+        hatIcon.className = 'tgi-product-icon';
+        hatIcon.innerHTML = '<img src="https://401files.vercel.app/hat-gradient-sm.png" alt="The Roomie Hat">'
+          + '<div class="tgi-product-label">Roomie Hat</div>'
+          + '<div class="tgi-product-price">$55</div>';
+        hatIcon.addEventListener('click', function() { openProductModal('hat'); });
+
+        // Insert product icons at the TOP of the grid
+        iconGrid.insertBefore(hatIcon, iconGrid.firstChild);
+        iconGrid.insertBefore(teeIcon, iconGrid.firstChild);
+      }
+
+      /* ---- HIDE UNWANTED ICONS + MARK EMPTY CELLS ---- */
+      var hideLabels = ['roommate', 'ex boyfriends', 'the shop'];
       document.querySelectorAll('.mobile-icons .w-layout-cell').forEach(function(cell) {
         if (!cell.querySelector('.draggable3')) {
           cell.classList.add('tgi-cell-empty');
@@ -257,14 +281,8 @@
         }
         var label = cell.querySelector('.text-block-3');
         var labelText = label ? label.textContent.trim().toLowerCase() : '';
-        // Hide roommate application + ex boyfriend's trash can
         if (hideLabels.indexOf(labelText) !== -1) {
           cell.style.display = 'none';
-          return;
-        }
-        // The Shop icon gets hero treatment (biggest, full width)
-        if (labelText === 'the shop') {
-          cell.classList.add('tgi-hero-icon');
         }
       });
 

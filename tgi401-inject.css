@@ -664,6 +664,13 @@
    TYPOGRAPHY
    ============================================== */
 @font-face {
+  font-family: 'BootsyTM';
+  src: url('https://401files.vercel.app/bootsy-tm.otf') format('opentype');
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
   font-family: 'HelveticaNeueLTPro';
   src: local('Helvetica Neue LT Pro'),
        local('HelveticaNeueLTPro-Bd'),
@@ -673,18 +680,31 @@
   font-display: swap;
 }
 
+/* Display/headings: Bootsy TM (brand font) */
 h1, h2, h3, h4, h5, h6,
 .heading, .text-block-3, .text-block-4,
-.text-block-5, .text-block-6, .text-block-7,
-.text-block-8, .text-block-28, .text-block-31,
-.text-block-32, .nav-bar, .field-label {
+.text-block-5, .text-block-8, .text-block-28,
+.text-block-31, .text-block-32,
+.field-label,
+#tgi401-chrome-bar .title,
+.tgi-product-label {
+  font-family: 'BootsyTM', 'HelveticaNeueLTPro', 'Helvetica Neue', sans-serif !important;
+  letter-spacing: -0.05em !important;
+}
+
+/* Body text: Helvetica Neue LT Pro */
+.text-block-6, .text-block-7,
+.nav-bar, .proof-text,
+.modal-name, .modal-price,
+.size-btn, .modal-buy,
+.modal-onesize, .modal-switch-btn span {
   font-family: 'HelveticaNeueLTPro', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif !important;
   font-weight: 700 !important;
   letter-spacing: -0.05em !important;
 }
 
 [style*="Space Grotesk"] {
-  font-family: 'HelveticaNeueLTPro', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif !important;
+  font-family: 'BootsyTM', 'HelveticaNeueLTPro', 'Helvetica Neue', sans-serif !important;
 }
 
 

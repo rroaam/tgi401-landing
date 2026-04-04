@@ -248,10 +248,25 @@
       // and route them to the product modal instead of Webflow popups
 
 
-      /* ---- INJECT PRODUCT ICONS (hat + shirt as app-style icons) ---- */
+      /* ---- PRODUCT + ICON GRID: hide all, then inject exactly what we want ---- */
+      // Step 1: Hide ALL Webflow cells — nuke everything
+      document.querySelectorAll('.mobile-icons .w-layout-cell').forEach(function(cell) {
+        cell.style.display = 'none';
+      });
+
+      // Step 2: Selectively un-hide the 3 we want (by label text)
+      var keepLabels = ['the roomies', 'don\'t click me', 'stalk us'];
+      document.querySelectorAll('.mobile-icons .w-layout-cell').forEach(function(cell) {
+        var label = cell.querySelector('.text-block-3');
+        var labelText = label ? label.textContent.trim().toLowerCase() : '';
+        if (keepLabels.indexOf(labelText) !== -1) {
+          cell.style.display = '';
+        }
+      });
+
+      // Step 3: Inject exactly ONE tee + ONE hat as product icons at top
       var iconGrid = document.querySelector('.mobile-icons');
       if (iconGrid) {
-        // Create tee icon
         var teeIcon = document.createElement('div');
         teeIcon.className = 'tgi-product-icon';
         teeIcon.innerHTML = '<img src="https://401files.vercel.app/shirt-gradient-sm.png" alt="The Roomie Tee">'
@@ -259,7 +274,6 @@
           + '<div class="tgi-product-price">$45</div>';
         teeIcon.addEventListener('click', function() { openProductModal('tee'); });
 
-        // Create hat icon
         var hatIcon = document.createElement('div');
         hatIcon.className = 'tgi-product-icon';
         hatIcon.innerHTML = '<img src="https://401files.vercel.app/hat-gradient-sm.png" alt="The Roomie Hat">'
@@ -267,26 +281,9 @@
           + '<div class="tgi-product-price">$55</div>';
         hatIcon.addEventListener('click', function() { openProductModal('hat'); });
 
-        // Insert product icons at the TOP of the grid
         iconGrid.insertBefore(hatIcon, iconGrid.firstChild);
         iconGrid.insertBefore(teeIcon, iconGrid.firstChild);
       }
-
-      /* ---- HIDE UNWANTED ICONS — only keep Roomies, Don't Click Me, Stalk Us ---- */
-      var keepLabels = ['the roomies', 'don\'t click me', 'stalk us'];
-      document.querySelectorAll('.mobile-icons .w-layout-cell').forEach(function(cell) {
-        if (!cell.querySelector('.draggable3')) {
-          cell.classList.add('tgi-cell-empty');
-          cell.style.display = 'none';
-          return;
-        }
-        var label = cell.querySelector('.text-block-3');
-        var labelText = label ? label.textContent.trim().toLowerCase() : '';
-        // Hide EVERYTHING except the 3 we want to keep
-        if (keepLabels.indexOf(labelText) === -1) {
-          cell.style.display = 'none';
-        }
-      });
 
 
       /* ---- HIDE CURSOR ---- */

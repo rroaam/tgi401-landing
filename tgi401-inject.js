@@ -272,16 +272,18 @@
         iconGrid.insertBefore(teeIcon, iconGrid.firstChild);
       }
 
-      /* ---- HIDE UNWANTED ICONS + MARK EMPTY CELLS ---- */
-      var hideLabels = ['roommate', 'ex boyfriends', 'the shop'];
+      /* ---- HIDE UNWANTED ICONS — only keep Roomies, Don't Click Me, Stalk Us ---- */
+      var keepLabels = ['the roomies', 'don\'t click me', 'stalk us'];
       document.querySelectorAll('.mobile-icons .w-layout-cell').forEach(function(cell) {
         if (!cell.querySelector('.draggable3')) {
           cell.classList.add('tgi-cell-empty');
+          cell.style.display = 'none';
           return;
         }
         var label = cell.querySelector('.text-block-3');
         var labelText = label ? label.textContent.trim().toLowerCase() : '';
-        if (hideLabels.indexOf(labelText) !== -1) {
+        // Hide EVERYTHING except the 3 we want to keep
+        if (keepLabels.indexOf(labelText) === -1) {
           cell.style.display = 'none';
         }
       });
